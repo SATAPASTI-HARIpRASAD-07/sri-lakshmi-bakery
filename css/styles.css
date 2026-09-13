@@ -1,0 +1,135 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+/* BRAND COLOR VARIABLES */
+:root {
+  --color-primary: #5A2D1A;
+  --color-secondary: #A94F20;
+  --color-accent: #D9823B;
+  --color-bg: #FFF9F2;
+  --color-card: #FFFFFF;
+  --color-text: #241812;
+  --color-muted: #75655D;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, .font-serif {
+  font-family: 'Playfair Display', serif;
+}
+
+.font-display {
+  font-family: 'Outfit', sans-serif;
+}
+
+/* CUSTOM DESKTOP MORPHING CURSOR */
+@media (min-width: 1024px) {
+  body {
+    cursor: default;
+  }
+}
+
+/* CUSTOM BAKERY SCROLLBAR */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #FFF9F2;
+}
+::-webkit-scrollbar-thumb {
+  background: #A94F20;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #5A2D1A;
+}
+
+/* CARD SHADOWS & 3D HOVER TILT */
+.bakery-card {
+  background-color: #FFFFFF;
+  border-radius: 20px;
+  border: 1px solid rgba(169, 79, 32, 0.12);
+  box-shadow: 0 10px 30px rgba(90, 45, 26, 0.05);
+  transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), border-color 0.4s ease;
+}
+
+.bakery-card:hover {
+  transform: translateY(-8px) scale(1.01);
+  box-shadow: 0 20px 40px rgba(90, 45, 26, 0.12);
+  border-color: rgba(217, 130, 59, 0.4);
+}
+
+/* BUTTONS */
+.btn-primary {
+  background: linear-gradient(135deg, #A94F20 0%, #5A2D1A 100%);
+  color: #FFFFFF;
+  font-weight: 700;
+  border-radius: 9999px;
+  padding: 14px 28px;
+  box-shadow: 0 10px 25px rgba(169, 79, 32, 0.3);
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 35px rgba(169, 79, 32, 0.45);
+  background: linear-gradient(135deg, #D9823B 0%, #A94F20 100%);
+}
+
+.btn-secondary {
+  background-color: #25D366;
+  color: #FFFFFF;
+  font-weight: 700;
+  border-radius: 9999px;
+  padding: 14px 28px;
+  box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3);
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 35px rgba(37, 211, 102, 0.45);
+  background-color: #1eb956;
+}
+
+/* GLASSMORPHISM & BLUR MODAL */
+.modal-backdrop {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background-color: rgba(36, 24, 18, 0.65);
+}
+
+/* KEYFRAME ANIMATIONS */
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.8; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 3s infinite ease-in-out;
+}
+
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(3deg); }
+}
+
+.animate-float {
+  animation: floatSlow 5s infinite ease-in-out;
+}
