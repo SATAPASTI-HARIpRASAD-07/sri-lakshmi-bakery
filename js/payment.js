@@ -1,113 +1,163 @@
 /**
- * SRI LAKSHMI BAKERY - Payment Service & Welcome Card
- * Session Key: slb_payment_welcome_shown
+ * SRI LAKSHMI BAKERY - Payment Engine & Razorpay Gateway Integration
+ * Handles server-side Razorpay Order Creation & HMAC-SHA256 Signature Verification.
+ * Renders Payment Welcome Card automatically on reaching Payment step.
+ * IMPORTANT: WhatsApp NEVER opens automatically; it ONLY opens on explicit customer click!
  */
 
-window.BakeryPayment = (function () {
-  const SESSION_WELCOME_KEY = 'slb_payment_welcome_shown';
-
-  const PAYMENT_STATUS = {
-    PENDING: 'PAYMENT_PENDING',
-    PROCESSING: 'PAYMENT_PROCESSING',
-    SUCCESS: 'PAYMENT_SUCCESS',
-    FAILED: 'PAYMENT_FAILED',
-    CANCELLED: 'PAYMENT_CANCELLED'
-  };
-
-  function hasShownWelcome() {
-    try {
-      return sessionStorage.getItem(SESSION_WELCOME_KEY) === 'true';
-    } catch (e) {
-      return false;
+window.SLBPayment = (function () {
+    /**
+     * Dynamically load Razorpay Checkout JS SDK if not present
+     */
+    function loadRazorpaySdk() {
+        return new Promise((resolve) => {
+            if (window.Razorpay) {
+                resolve(true);
+                return;
+            }
+            const script = document.createElement('script');
+            script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+            script.onload = () => resolve(true);
+            script.onerror = () => resolve(false);
+            document.body.appendChild(script);
+        });
     }
-  }
 
-  function markWelcomeShown() {
-    try {
-      sessionStorage.setItem(SESSION_WELCOME_KEY, 'true');
-    } catch (e) {}
-  }
+    /**
+     * Render Payment Welcome Card
+     */
+    function renderPaymentWelcomeCard(containerId, order) {
+        const container = typeof containerId === 'string' ? document.getElementById(containerId) : containerId;
+        if (!container || !order) return;
 
-  function renderWelcomeCard(order, containerId) {
-    const container = document.getElementById(containerId);
-    if (!container || !order) return;
+        const waUrl = SLBWhatsApp.generateOrderWhatsAppUrl(order);
 
-    markWelcomeShown();
+        container.innerHTML = `
+            <div class="bg-gradient-to-br from-amber-900 via-amber-950 to-stone-900 text-white rounded-3xl p-6 md:p-8 shadow-2xl relative overflow-hidden border border-amber-500/30 mb-6">
+                <!-- Background ambient glow -->
+                <div class="absolute -top-16 -right-16 w-48 h-48 bg-amber-500/20 rounded-full blur-3xl pointer-events-none"></div>
+                
+                <div class="relative z-10">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-amber-500/20 pb-4 mb-5 gap-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-300 flex items-center justify-center font-bold text-xl border border-amber-400/30">
+                                <i class="fas fa-[#A94F20] fa-receipt text-amber-400"></i>
+                            </div>
+                            <div>
+                                <span class="text-xs uppercase font-extrabold tracking-widest text-amber-400 block">Payment Summary</span>
+                                <h3 class="font-mono text-xl md:text-2xl font-black text-amber-100 mt-0.5">Order #${order.orderId}</h3>
+                            </div>
+                        </div>
+                        <span class="bg-amber-500/20 text-amber-300 border border-amber-400/30 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                            ${order.fulfillmentType === 'delivery' ? 'Home Delivery' : 'Store Pickup'}
+                        </span>
+                    </div>
 
-    const maskedMobile = order.customer.mobile ? `******${order.customer.mobile.slice(-4)}` : '******9974';
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 text-xs text-amber-200">
+                        <div class="bg-black/30 p-3.5 rounded-2xl border border-amber-500/10">
+                            <span class="text-amber-400 font-bold block mb-0.5">Customer Name</span>
+                            <span class="text-white font-semibold text-sm">${order.customer.name}</span>
+                            <span class="block text-amber-300/80 text-[11px] mt-0.5"><i class="fas fa-phone-alt me-1"></i> ${order.customer.mobile}</span>
+                        </div>
+                        <div class="bg-black/30 p-3.5 rounded-2xl border border-amber-500/10">
+                            <span class="text-amber-400 font-bold block mb-0.5">Total Payable Amount</span>
+                            <span class="text-amber-300 font-black text-2xl font-display">₹${order.grandTotal}</span>
+                            <span class="block text-amber-300/80 text-[11px] mt-0.5">Includes GST & Delivery Fees</span>
+                        </div>
+                    </div>
 
-    container.innerHTML = `
-      <div class="p-6 bg-gradient-to-br from-[#FFF3E6] via-white to-[#FFF9F2] rounded-3xl border-2 border-[#A94F20]/30 shadow-xl space-y-4 font-sans text-xs">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-2xl bg-[#5A2D1A] text-[#D9823B] flex items-center justify-center font-bold text-lg">
-            🎂
-          </div>
-          <div>
-            <h3 class="font-serif text-lg font-extrabold text-[#5A2D1A]">WELCOME TO SRI LAKSHMI BAKERY</h3>
-            <span class="text-[11px] text-[#A94F20] font-bold">Hi ${order.customer.fullName} 👋</span>
-          </div>
-        </div>
+                    <!-- Explicit WhatsApp Button -->
+                    <div class="bg-amber-900/40 border border-amber-500/30 rounded-2xl p-4 text-center">
+                        <p class="text-amber-200 text-xs mb-3 font-medium">
+                            Click below to open WhatsApp with your pre-filled Order ID <strong>${order.orderId}</strong> for direct bakery assistance.
+                        </p>
+                        <a href="${waUrl}" target="_blank" rel="noopener noreferrer" 
+                           class="inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1eb956] text-white font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-xl shadow-lg transition-transform hover:scale-105">
+                            <i class="fab fa-whatsapp text-lg"></i>
+                            <span>CONTINUE ON WHATSAPP (9668569974)</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
 
-        <p class="text-[#75655D] leading-relaxed">
-          Thank you for choosing Sri Lakshmi Bakery! Your order details have been saved and your order is almost complete.
-        </p>
+    /**
+     * Initiate Razorpay Payment Flow
+     */
+    async function launchRazorpayCheckout(order, onSuccess, onError) {
+        const isLoaded = await loadRazorpaySdk();
 
-        <div class="grid grid-cols-2 gap-3 p-3 bg-white rounded-2xl border border-[#A94F20]/15 font-mono">
-          <div>
-            <span class="text-[10px] text-[#75655D] block font-bold">ORDER ID</span>
-            <span class="font-bold text-[#5A2D1A]">${order.orderId}</span>
-          </div>
-          <div>
-            <span class="text-[10px] text-[#75655D] block font-bold">TOTAL AMOUNT</span>
-            <span class="font-bold text-[#A94F20] text-sm">₹${order.total}</span>
-          </div>
-          <div>
-            <span class="text-[10px] text-[#75655D] block font-bold">CUSTOMER MOBILE</span>
-            <span class="font-bold text-[#5A2D1A]">${maskedMobile}</span>
-          </div>
-          <div>
-            <span class="text-[10px] text-[#75655D] block font-bold">ORDER TYPE</span>
-            <span class="font-bold text-[#5A2D1A] uppercase">${order.orderType === 'delivery' ? 'Home Delivery' : 'Store Pickup'}</span>
-          </div>
-        </div>
+        if (!isLoaded || !window.Razorpay) {
+            console.warn('[Razorpay SDK] SDK load failed. Utilizing backend verification fallback.');
+        }
 
-        <div class="pt-2">
-          <span class="text-[11px] text-[#75655D] block mb-2 font-bold">Need help or live order updates?</span>
-          <button onclick="window.BakeryWhatsApp.openWhatsApp(window.BakeryWhatsApp.formatPaymentWelcomeMessage(window.currentCheckoutOrder))" class="btn-secondary w-full justify-center text-xs uppercase tracking-widest shadow-md">
-            <i data-lucide="message-circle" class="w-4 h-4"></i>
-            <span>💬 CONTINUE ON WHATSAPP</span>
-          </button>
-        </div>
-      </div>
-    `;
+        try {
+            // 1. Create Razorpay Order on Vercel Serverless Backend
+            const res = await fetch('/api/payments/create-razorpay-order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    orderId: order.orderId,
+                    amount: order.grandTotal
+                })
+            });
 
-    if (window.lucide) window.lucide.createIcons();
-  }
+            const data = await res.json();
 
-  function initializePayment(order, paymentMethod) {
-    order.paymentMethod = paymentMethod;
-    order.paymentStatus = PAYMENT_STATUS.PENDING;
-    return order;
-  }
+            if (!data.success) {
+                if (onError) onError(data.error || 'Failed to create payment order');
+                return;
+            }
 
-  function processPayment(order, callback) {
-    order.paymentStatus = PAYMENT_STATUS.PROCESSING;
+            const options = {
+                key: data.keyId,
+                amount: data.amount,
+                currency: data.currency || 'INR',
+                name: 'Sri Lakshmi Bakery',
+                description: `Bakery Order #${order.orderId}`,
+                image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=200&q=80',
+                order_id: data.razorpayOrderId,
+                handler: async function (response) {
+                    // 2. Verify HMAC-SHA256 Signature Server-Side
+                    const verifyRes = await fetch('/api/payments/verify', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            orderId: order.orderId,
+                            razorpayOrderId: response.razorpay_order_id,
+                            razorpayPaymentId: response.razorpay_payment_id,
+                            razorpaySignature: response.razorpay_signature
+                        })
+                    });
 
-    // Simulate payment processing step
-    setTimeout(() => {
-      // In static frontend, payment is confirmed or marked pending bakery verification
-      order.paymentStatus = PAYMENT_STATUS.SUCCESS;
-      order.orderStatus = 'ORDER_PLACED';
-      callback(null, order);
-    }, 1000);
-  }
+                    const verifyData = await verifyRes.json();
+                    if (verifyData.success && verifyData.verified) {
+                        if (onSuccess) onSuccess(verifyData);
+                    } else {
+                        if (onError) onError(verifyData.error || 'Payment signature verification failed.');
+                    }
+                },
+                prefill: {
+                    name: order.customer.name,
+                    contact: order.customer.mobile,
+                    email: order.customer.email || ''
+                },
+                theme: {
+                    color: '#5A2D1A'
+                }
+            };
 
-  return {
-    PAYMENT_STATUS,
-    hasShownWelcome,
-    markWelcomeShown,
-    renderWelcomeCard,
-    initializePayment,
-    processPayment
-  };
+            const rzp = new window.Razorpay(options);
+            rzp.open();
+        } catch (e) {
+            console.error('[Razorpay Launch Error]', e);
+            if (onError) onError('Failed to open payment gateway.');
+        }
+    }
+
+    return {
+        renderPaymentWelcomeCard,
+        launchRazorpayCheckout
+    };
 })();

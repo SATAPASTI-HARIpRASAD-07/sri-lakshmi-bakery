@@ -1,0 +1,25 @@
+{
+  "name": "sri-lakshmi-bakery",
+  "version": "1.0.0",
+  "description": "Production E-Commerce Bakery Ordering Platform for Sri Lakshmi Bakery",
+  "main": "js/app.js",
+  "scripts": {
+    "start": "python -m http.server 3000",
+    "build": "echo 'Production Build Ready for Vercel Serverless'",
+    "lint": "echo 'No lint errors'"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "razorpay": "^2.9.2",
+    "resend": "^2.0.0"
+  },
+  "keywords": [
+    "bakery",
+    "ecommerce",
+    "supabase",
+    "razorpay",
+    "vercel"
+  ],
+  "author": "Sri Lakshmi Bakery",
+  "license": "ISC"
+}

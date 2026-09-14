@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sri Lakshmi Bakery | Delivery Agent Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="bg-[#FFF9F2] text-[#241812]">
+
+  <header class="bg-[#5A2D1A] text-white py-4 px-6 shadow-md flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <i class="fas fa-motorcycle text-amber-400 text-2xl"></i>
+      <div>
+        <h1 class="font-serif text-lg font-bold">Sri Lakshmi Bakery</h1>
+        <span class="text-xs text-amber-200 uppercase font-bold tracking-wider">Delivery Agent Portal</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <span id="gps-indicator" class="text-xs bg-emerald-700 text-white px-3 py-1 rounded-full font-bold flex items-center gap-1.5">
+        <i class="fas fa-circle text-[8px] animate-pulse"></i> GPS Ready
+      </span>
+      <a href="index.html" class="text-xs bg-amber-800 hover:bg-amber-700 px-3 py-1.5 rounded-lg text-white font-bold">
+        Store Home
+      </a>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto p-4 md:p-6">
+    <div class="bg-white rounded-3xl border border-[#A94F20]/20 p-6 shadow-lg mb-6">
+      <div class="flex justify-between items-center mb-4 pb-3 border-b border-amber-100">
+        <h2 class="font-serif text-xl font-bold text-[#5A2D1A]">Active Assigned Deliveries</h2>
+        <button onclick="SLBDelivery.refreshOrders()" class="text-xs bg-amber-100 text-amber-900 font-bold px-3 py-1.5 rounded-xl border border-amber-300">
+          <i class="fas fa-sync-alt me-1"></i> Refresh
+        </button>
+      </div>
+
+      <div id="delivery-orders-list" class="space-y-4"></div>
+    </div>
+  </main>
+
+  <script src="js/delivery.js"></script>
+</body>
+</html>
