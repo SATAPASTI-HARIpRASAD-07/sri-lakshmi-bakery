@@ -298,7 +298,8 @@ window.App = (function () {
   }
 
   function updateCartUI() {
-    const summary = SLBCart.getCartSummary();
+    if (!window.SLBCart) return;
+    const summary = window.SLBCart.getCartSummary();
     const badge = document.getElementById('cart-badge');
     const drawerItems = document.getElementById('cart-drawer-items');
     const subtotalEl = document.getElementById('cart-subtotal');
@@ -319,7 +320,7 @@ window.App = (function () {
     if (totalEl) totalEl.innerText = `₹${summary.grandTotal}`;
 
     if (drawerItems) {
-      if (summary.items.length === 0) {
+      if (!summary.items || summary.items.length === 0) {
         drawerItems.innerHTML = `
           <div class="text-center py-12 space-y-3">
             <i data-lucide="shopping-bag" class="w-12 h-12 text-[#A94F20] mx-auto opacity-30"></i>
@@ -328,31 +329,54 @@ window.App = (function () {
           </div>
         `;
       } else {
-        drawerItems.innerHTML = summary.items.map(item => `
-          <div class="flex items-center justify-between p-3 bg-white rounded-2xl border border-[#A94F20]/15 shadow-sm text-xs">
-            <div class="flex items-center gap-3">
-              <img src="${window.SLBImageLoader ? window.SLBImageLoader.getOptimizedImageUrl(item.image, 150, 75) : item.image}" alt="${item.name}" loading="lazy" decoding="async" class="w-12 h-12 object-cover rounded-xl border border-[#A94F20]/20 aspect-square" />
-              <div>
-                <h5 class="font-bold text-[#5A2D1A]">${item.name}</h5>
-                <span class="text-xs text-[#A94F20] font-semibold">₹${item.price}</span>
+        drawerItems.innerHTML = summary.items.map(item => {
+          const itemId = item.cartItemId || item.id;
+          const imgUrl = window.SLBImageLoader ? window.SLBImageLoader.getOptimizedImageUrl(item.image, 150, 75) : item.image;
+          const lineTotal = item.price * item.quantity;
+
+          return `
+            <div class="flex items-center justify-between p-3 bg-white rounded-2xl border border-[#A94F20]/15 shadow-sm text-xs gap-2">
+              <div class="flex items-center gap-3 min-w-0">
+                <img src="${imgUrl}" alt="${item.name}" loading="lazy" decoding="async" class="w-12 h-12 object-cover rounded-xl border border-[#A94F20]/20 aspect-square flex-shrink-0" />
+                <div class="truncate">
+                  <h5 class="font-bold text-[#5A2D1A] truncate">${item.name}</h5>
+                  <span class="text-xs text-[#A94F20] font-semibold">₹${item.price} × ${item.quantity} = ₹${lineTotal}</span>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2 flex-shrink-0">
+                <div class="flex items-center gap-1.5 bg-[#FFF9F2] px-1.5 py-0.5 rounded-lg border border-[#A94F20]/20">
+                  <button onclick="window.App.updateCartQty('${itemId}', -1)" class="w-5 h-5 rounded bg-white border border-[#A94F20]/30 font-bold text-[#5A2D1A] hover:bg-[#A94F20] hover:text-white transition-colors flex items-center justify-center text-xs">-</button>
+                  <span class="font-bold text-xs px-1">${item.quantity}</span>
+                  <button onclick="window.App.updateCartQty('${itemId}', 1)" class="w-5 h-5 rounded bg-white border border-[#A94F20]/30 font-bold text-[#5A2D1A] hover:bg-[#A94F20] hover:text-white transition-colors flex items-center justify-center text-xs">+</button>
+                </div>
+                <button onclick="window.App.removeCartItem('${itemId}')" title="Remove item" class="p-1 text-stone-400 hover:text-rose-600 transition-colors">
+                  <i class="fas fa-trash-alt text-xs"></i>
+                </button>
               </div>
             </div>
-
-            <div class="flex items-center gap-2">
-              <button onclick="window.App.updateCartQty('${item.cartItemId || item.id}', ${item.quantity - 1})" class="w-6 h-6 rounded-lg bg-[#FFF9F2] border border-[#A94F20]/20 font-bold text-[#5A2D1A] hover:bg-[#A94F20] hover:text-white transition-colors">-</button>
-              <span class="font-bold text-xs px-1">${item.quantity}</span>
-              <button onclick="window.App.updateCartQty('${item.cartItemId || item.id}', ${item.quantity + 1})" class="w-6 h-6 rounded-lg bg-[#FFF9F2] border border-[#A94F20]/20 font-bold text-[#5A2D1A] hover:bg-[#A94F20] hover:text-white transition-colors">+</button>
-            </div>
-          </div>
-        `).join('');
+          `;
+        }).join('');
       }
+    }
+
+    // Sync Checkout Step 1 if Checkout Stepper is open
+    if (window.SLBCheckout && typeof window.SLBCheckout.renderStep1Cart === 'function') {
+      window.SLBCheckout.renderStep1Cart();
     }
 
     if (window.lucide) window.lucide.createIcons();
   }
 
-  function updateCartQty(cartItemId, newQty) {
-    SLBCart.updateQuantity(cartItemId, newQty);
+  function updateCartQty(cartItemId, delta) {
+    if (!window.SLBCart) return;
+    window.SLBCart.updateQuantity(cartItemId, delta);
+    updateCartUI();
+  }
+
+  function removeCartItem(cartItemId) {
+    if (!window.SLBCart) return;
+    window.SLBCart.removeItem(cartItemId);
     updateCartUI();
   }
 
@@ -810,6 +834,8 @@ window.App = (function () {
     handleSort,
     addToCartDirect,
     updateCartQty,
+    removeCartItem,
+    updateCartUI,
     openCartDrawer,
     closeCartDrawer,
     openCheckoutStepper,

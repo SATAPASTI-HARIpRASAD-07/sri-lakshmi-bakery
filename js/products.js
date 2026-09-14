@@ -455,7 +455,9 @@ window.BakeryProducts = (function () {
   }
 
   function getProductById(id) {
-    return products.find(p => p.id === id);
+    if (!id) return null;
+    const cleanId = String(id).trim();
+    return products.find(p => String(p.id).trim() === cleanId);
   }
 
   /**

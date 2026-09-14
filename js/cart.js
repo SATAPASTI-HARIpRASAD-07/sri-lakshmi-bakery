@@ -62,16 +62,11 @@ window.SLBCart = (function () {
 
   function updateQuantity(cartItemId, delta) {
     loadCart();
-    // Allow direct new quantity assignment if delta is absolute quantity or delta change
     const item = cartItems.find(i => i.id === cartItemId || i.cartItemId === cartItemId);
     if (!item) return cartItems;
 
-    if (typeof delta === 'number' && delta < 0 && Math.abs(delta) > 5) {
-      // If delta is passed as new target quantity e.g. 0
-      item.quantity = delta;
-    } else {
-      item.quantity += delta;
-    }
+    const change = typeof delta === 'number' ? delta : 0;
+    item.quantity += change;
 
     if (item.quantity <= 0) {
       cartItems = cartItems.filter(i => i.id !== cartItemId && i.cartItemId !== cartItemId);
