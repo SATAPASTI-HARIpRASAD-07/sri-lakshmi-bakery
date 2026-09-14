@@ -616,23 +616,47 @@ window.App = (function () {
     const container = document.getElementById('gallery-grid');
     if (!container) return;
 
-    const images = [
-      { thumb: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&format=webp&w=400&q=80', full: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&format=webp&w=1200&q=85', title: 'Belgian Chocolate Cake' },
-      { thumb: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&format=webp&w=400&q=80', full: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&format=webp&w=1200&q=85', title: 'Dining Lounge Area' },
-      { thumb: 'https://images.unsplash.com/photo-1517433670267-08bbd4be890f?auto=format&fit=crop&format=webp&w=400&q=80', full: 'https://images.unsplash.com/photo-1517433670267-08bbd4be890f?auto=format&fit=crop&format=webp&w=1200&q=85', title: 'Fresh Baked Breads' },
-      { thumb: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&format=webp&w=400&q=80', full: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&format=webp&w=1200&q=85', title: 'Hot Puff Pastries' },
-      { thumb: 'https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&format=webp&w=400&q=80', full: 'https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&format=webp&w=1200&q=85', title: 'Rasmalai Celebration Cake' },
-      { thumb: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&format=webp&w=400&q=80', full: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&format=webp&w=1200&q=85', title: 'Glazed Chocolate Donuts' }
-    ];
+    let galleryItems = [];
+    if (window.BAKERY_DATA && window.BAKERY_DATA.gallery && window.BAKERY_DATA.gallery.length > 0) {
+      galleryItems = window.BAKERY_DATA.gallery;
+    } else if (window.BakeryData && window.BakeryData.gallery && window.BakeryData.gallery.length > 0) {
+      galleryItems = window.BakeryData.gallery;
+    } else {
+      galleryItems = [
+        { id: "g1", title: "Royal Rasmalai Fusion Cake", category: "Celebration Cakes", image: "https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=800&q=80" },
+        { id: "g2", title: "Chilled Saffron Badam Milk & Rose Milk", category: "Cool Drinks", image: "https://images.unsplash.com/photo-1556881286-fc6915169721?auto=format&fit=crop&w=800&q=80" },
+        { id: "g3", title: "Birthday Celebration Seating Zone", category: "Dining Lounge", image: "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&w=800&q=80" },
+        { id: "g4", title: "Belgian Chocolate Crunch Cake", category: "Celebration Cakes", image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=800&q=80" },
+        { id: "g5", title: "Family AC Seating Pavilion", category: "Dining Lounge", image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80" },
+        { id: "g6", title: "Hot Oven Baked Breads & Buns", category: "Bakery", image: "https://images.unsplash.com/photo-1517433670267-08bbd4be890f?auto=format&fit=crop&w=800&q=80" },
+        { id: "g7", title: "Golden Crispy Veg & Egg Puffs", category: "Snacks", image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80" },
+        { id: "g8", title: "Iced Cold Coffee with Chocolate Ice Cream", category: "Cool Drinks", image: "https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&w=800&q=80" }
+      ];
+    }
 
-    container.innerHTML = images.map(img => `
-      <div onclick="window.App.openLightbox('${img.full}', '${img.title}')" class="aspect-square rounded-2xl overflow-hidden border border-[#A94F20]/20 shadow-md group cursor-pointer bg-[#FFF9F2]">
-        <img src="${img.thumb}" alt="${img.title}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 aspect-square" />
-      </div>
-    `).join('');
+    container.innerHTML = galleryItems.map(item => {
+      const cleanTitle = (item.title || 'Bakery Asset').replace(/'/g, "\\'");
+      const thumbUrl = window.SLBImageLoader ? window.SLBImageLoader.getOptimizedImageUrl(item.image, 480, 80) : item.image;
+      const fullUrl = window.SLBImageLoader ? window.SLBImageLoader.getOptimizedImageUrl(item.image, 1200, 85) : item.image;
+
+      return `
+        <div onclick="window.App.openLightbox('${fullUrl}', '${cleanTitle}', '${item.category || 'Gallery'}')" 
+             class="aspect-square rounded-2xl overflow-hidden border border-[#A94F20]/20 shadow-md group cursor-pointer relative bg-[#FFF9F2]">
+          <img src="${thumbUrl}" alt="${item.title}" loading="lazy" decoding="async" 
+               onerror="if(window.SLBImageLoader) window.SLBImageLoader.handleImageError(this, '${cleanTitle}')"
+               class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 aspect-square" />
+          
+          <!-- Hover Caption Overlay -->
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 text-white">
+            <span class="text-[10px] font-bold uppercase tracking-widest text-[#D9823B]">${item.category || 'Gallery'}</span>
+            <h4 class="font-serif text-sm font-bold text-white line-clamp-2">${item.title}</h4>
+          </div>
+        </div>
+      `;
+    }).join('');
   }
 
-  function openLightbox(url, title) {
+  function openLightbox(url, title, category = 'Sri Lakshmi Bakery') {
     const modal = document.getElementById('lightbox-modal');
     const img = document.getElementById('lightbox-img');
     const caption = document.getElementById('lightbox-caption');
@@ -640,7 +664,9 @@ window.App = (function () {
     if (!modal || !img) return;
 
     img.src = url;
-    if (caption) caption.innerText = title || '';
+    if (caption) {
+      caption.innerHTML = `${title} <span class="block text-xs text-[#D9823B] font-sans font-semibold mt-1 uppercase tracking-widest">${category}</span>`;
+    }
 
     modal.classList.remove('hidden');
     modal.classList.add('flex');

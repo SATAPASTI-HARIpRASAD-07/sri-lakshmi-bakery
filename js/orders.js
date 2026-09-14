@@ -4,7 +4,7 @@
  * Keys: slb_orders, slb_last_order, slb_customer
  */
 
-window.BakeryOrders = (function () {
+window.SLBOrders = (function () {
   const ORDERS_KEY = 'slb_orders';
   const LAST_ORDER_KEY = 'slb_last_order';
   const CUSTOMER_KEY = 'slb_customer';
@@ -38,30 +38,49 @@ window.BakeryOrders = (function () {
     return /^\d{6}$/.test(clean);
   }
 
+  function saveCustomerDetails(customerObj) {
+    try {
+      if (!customerObj) return;
+      localStorage.setItem(CUSTOMER_KEY, JSON.stringify(customerObj));
+    } catch (e) {}
+  }
+
+  function getSavedCustomer() {
+    try {
+      const saved = localStorage.getItem(CUSTOMER_KEY);
+      return saved ? JSON.parse(saved) : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
   function createOrder(orderPayload) {
     const orderId = generateOrderId();
-    const normalizedMobile = normalizeMobile(orderPayload.customer.mobile);
+    const cust = orderPayload.customer || {};
+    const normalizedMobile = normalizeMobile(cust.mobile);
 
     const order = {
       orderId: orderId,
       customer: {
-        fullName: orderPayload.customer.fullName,
+        name: cust.name || cust.fullName || "Valued Customer",
+        fullName: cust.fullName || cust.name || "Valued Customer",
         mobile: normalizedMobile,
-        email: orderPayload.customer.email || "",
-        instructions: orderPayload.customer.instructions || "",
-        prefs: orderPayload.customer.prefs || { whatsapp: true, sms: false, email: false }
+        email: cust.email || "",
+        instructions: cust.instructions || "",
+        prefs: cust.prefs || { whatsapp: true, sms: false, email: false }
       },
-      items: orderPayload.items,
-      subtotal: orderPayload.subtotal,
-      deliveryFee: orderPayload.deliveryFee,
-      discount: orderPayload.discount,
-      total: orderPayload.total,
-      orderType: orderPayload.orderType, // 'delivery' or 'pickup'
-      address: orderPayload.orderType === 'delivery' ? orderPayload.address : null,
-      pickupDate: orderPayload.orderType === 'pickup' ? orderPayload.pickupDate : null,
-      pickupSlot: orderPayload.orderType === 'pickup' ? orderPayload.pickupSlot : null,
-      paymentMethod: orderPayload.paymentMethod,
-      paymentStatus: orderPayload.paymentStatus || 'PAYMENT_PENDING',
+      items: orderPayload.items || [],
+      subtotal: orderPayload.subtotal || 0,
+      deliveryFee: typeof orderPayload.deliveryFee === 'number' ? orderPayload.deliveryFee : 50,
+      discount: orderPayload.discount || 0,
+      total: orderPayload.grandTotal || orderPayload.total || 0,
+      grandTotal: orderPayload.grandTotal || orderPayload.total || 0,
+      fulfillmentType: orderPayload.fulfillmentType || orderPayload.orderType || 'delivery',
+      orderType: orderPayload.orderType || orderPayload.fulfillmentType || 'delivery',
+      deliveryAddress: orderPayload.deliveryAddress || orderPayload.address || null,
+      pickupDetails: orderPayload.pickupDetails || null,
+      paymentMethod: orderPayload.paymentMethod || 'upi',
+      paymentStatus: orderPayload.paymentStatus || 'Pending Payment Verification',
       orderStatus: 'ORDER_PLACED',
       createdAt: new Date().toISOString()
     };
@@ -98,18 +117,10 @@ window.BakeryOrders = (function () {
     }
   }
 
-  function getSavedCustomer() {
-    try {
-      const saved = localStorage.getItem(CUSTOMER_KEY);
-      return saved ? JSON.parse(saved) : null;
-    } catch (e) {
-      return null;
-    }
-  }
-
   function getOrderById(orderId) {
+    if (!orderId) return null;
     const orders = getOrders();
-    return orders.find(o => o.orderId.toUpperCase() === orderId.trim().toUpperCase());
+    return orders.find(o => o.orderId && o.orderId.toUpperCase() === orderId.trim().toUpperCase());
   }
 
   return {
@@ -117,10 +128,17 @@ window.BakeryOrders = (function () {
     normalizeMobile,
     validateMobile,
     validatePin,
+    validatePinCode: validatePin,
+    saveCustomerDetails,
+    getCustomerDetails: getSavedCustomer,
+    getSavedCustomer,
     createOrder,
     getOrders,
+    getAllOrders: getOrders,
     getLastOrder,
-    getSavedCustomer,
     getOrderById
   };
 })();
+
+// Alias BakeryOrders for absolute compatibility
+window.BakeryOrders = window.SLBOrders;

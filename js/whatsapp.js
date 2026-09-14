@@ -5,7 +5,7 @@
  * Call URL: tel:+919668569974
  */
 
-window.BakeryWhatsApp = (function () {
+window.SLBWhatsApp = (function () {
   const BAKERY_PHONE = "9668569974";
   const BAKERY_WA_NUM = "919668569974";
   const CALL_URL = "tel:+919668569974";
@@ -33,12 +33,19 @@ window.BakeryWhatsApp = (function () {
   }
 
   function formatPaymentWelcomeMessage(order) {
-    return `Hello Sri Lakshmi Bakery 👋\n\nI am placing an order.\n\nOrder ID: ${order.orderId}\n\nCustomer:\n${order.customer.fullName}\n\nMobile:\n${order.customer.mobile}\n\nOrder Total:\n₹${order.total}\n\nOrder Type:\n${order.orderType === 'delivery' ? 'Home Delivery' : 'Store Pickup'}\n\nI have reached the payment section. Please assist me with my order.\n\nThank you! 🎂`;
+    const name = order.customer.name || order.customer.fullName || 'Valued Customer';
+    return `Hello Sri Lakshmi Bakery 👋\n\nI am placing an order.\n\nOrder ID: ${order.orderId}\n\nCustomer:\n${name}\n\nMobile:\n${order.customer.mobile}\n\nOrder Total:\n₹${order.grandTotal || order.total}\n\nOrder Type:\n${(order.fulfillmentType || order.orderType) === 'delivery' ? 'Home Delivery' : 'Store Pickup'}\n\nI have reached the payment section. Please assist me with my order.\n\nThank you! 🎂`;
   }
 
   function formatOrderConfirmationMessage(order) {
-    let itemsText = order.items.map(i => `${i.quantity} × ${i.name}`).join('\n');
-    return `Hello Sri Lakshmi Bakery 👋\n\nI want to confirm my order.\n\nOrder ID:\n${order.orderId}\n\nCustomer:\n${order.customer.fullName}\n\nMobile:\n${order.customer.mobile}\n\nOrder Type:\n${order.orderType === 'delivery' ? 'Home Delivery' : 'Store Pickup'}\n\nTotal:\n₹${order.total}\n\nItems:\n${itemsText}\n\nPlease confirm my order. Thank you!`;
+    const name = order.customer.name || order.customer.fullName || 'Valued Customer';
+    let itemsText = (order.items || []).map(i => `${i.quantity} × ${i.name}`).join('\n');
+    return `Hello Sri Lakshmi Bakery 👋\n\nI want to confirm my order.\n\nOrder ID:\n${order.orderId}\n\nCustomer:\n${name}\n\nMobile:\n${order.customer.mobile}\n\nOrder Type:\n${(order.fulfillmentType || order.orderType) === 'delivery' ? 'Home Delivery' : 'Store Pickup'}\n\nTotal:\n₹${order.grandTotal || order.total}\n\nItems:\n${itemsText}\n\nPlease confirm my order. Thank you!`;
+  }
+
+  function generateOrderWhatsAppUrl(order) {
+    const msg = formatOrderConfirmationMessage(order);
+    return getWhatsAppUrl(msg);
   }
 
   function formatTrackingMessage(orderId, customerName) {
@@ -53,6 +60,10 @@ window.BakeryWhatsApp = (function () {
     openWhatsApp,
     formatPaymentWelcomeMessage,
     formatOrderConfirmationMessage,
+    generateOrderWhatsAppUrl,
     formatTrackingMessage
   };
 })();
+
+// Alias BakeryWhatsApp for absolute compatibility
+window.BakeryWhatsApp = window.SLBWhatsApp;

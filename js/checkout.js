@@ -328,6 +328,11 @@ window.SLBCheckout = (function () {
             }
         }
 
+        // Action when reaching Step 1 (Cart Review)
+        if (currentStep === 1) {
+            renderStep1Cart();
+        }
+
         // Action when reaching Confirmation Step (Step 5)
         if (currentStep === 5 && checkoutState.createdOrder) {
             renderConfirmationStep();
@@ -339,6 +344,118 @@ window.SLBCheckout = (function () {
                 SLBTracking.renderTrackingView('tracking-container', checkoutState.createdOrder.orderId);
             }
         }
+    }
+
+    /**
+     * Render Step 1 Cart Review UI dynamically
+     */
+    function renderStep1Cart() {
+        const cartItemsContainer = document.getElementById('checkout-cart-items-container');
+        const cartSummaryContainer = document.getElementById('checkout-cart-summary-container');
+        const emptyCartView = document.getElementById('checkout-empty-cart-view');
+        const continueBtn = document.getElementById('btn-step1-continue');
+
+        if (!window.SLBCart) return;
+
+        const summary = window.SLBCart.getCartSummary(null, checkoutState.fulfillmentType);
+
+        if (!summary.items || summary.items.length === 0) {
+            if (cartItemsContainer) cartItemsContainer.classList.add('hidden');
+            if (cartSummaryContainer) cartSummaryContainer.classList.add('hidden');
+            if (emptyCartView) emptyCartView.classList.remove('hidden');
+            if (continueBtn) {
+                continueBtn.disabled = true;
+                continueBtn.classList.add('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
+            }
+            return;
+        }
+
+        // Cart is NOT empty
+        if (emptyCartView) emptyCartView.classList.add('hidden');
+        if (cartItemsContainer) cartItemsContainer.classList.remove('hidden');
+        if (cartSummaryContainer) cartSummaryContainer.classList.remove('hidden');
+        if (continueBtn) {
+            continueBtn.disabled = false;
+            continueBtn.classList.remove('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
+        }
+
+        if (cartItemsContainer) {
+            cartItemsContainer.innerHTML = summary.items.map(item => {
+                const imgUrl = window.SLBImageLoader ? window.SLBImageLoader.getOptimizedImageUrl(item.image, 150, 75) : item.image;
+                const lineTotal = item.price * item.quantity;
+                const itemId = item.cartItemId || item.id;
+
+                return `
+                    <div class="flex items-center justify-between p-3.5 bg-white rounded-2xl border border-[#A94F20]/20 shadow-sm text-xs gap-3">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <img src="${imgUrl}" alt="${item.name}" loading="lazy" decoding="async" class="w-14 h-14 object-cover rounded-xl border border-[#A94F20]/20 aspect-square flex-shrink-0" />
+                            <div class="truncate">
+                                <h5 class="font-bold text-[#5A2D1A] truncate text-sm">${item.name}</h5>
+                                <div class="flex items-center gap-2 mt-0.5">
+                                    <span class="text-xs text-[#A94F20] font-bold">₹${item.price}</span>
+                                    <span class="text-[11px] text-[#75655D]">each</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4 flex-shrink-0">
+                            <div class="flex items-center gap-2 bg-[#FFF9F2] px-2 py-1 rounded-xl border border-[#A94F20]/20">
+                                <button onclick="SLBCheckout.updateCartItemQty('${itemId}', -1)" class="w-6 h-6 rounded-lg bg-white border border-[#A94F20]/30 font-bold text-[#5A2D1A] hover:bg-[#A94F20] hover:text-white transition-colors flex items-center justify-center">-</button>
+                                <span class="font-bold text-xs px-1 text-[#5A2D1A]">${item.quantity}</span>
+                                <button onclick="SLBCheckout.updateCartItemQty('${itemId}', 1)" class="w-6 h-6 rounded-lg bg-white border border-[#A94F20]/30 font-bold text-[#5A2D1A] hover:bg-[#A94F20] hover:text-white transition-colors flex items-center justify-center">+</button>
+                            </div>
+
+                            <div class="text-right min-w-[60px]">
+                                <span class="font-black text-sm text-[#5A2D1A] block">₹${lineTotal}</span>
+                            </div>
+
+                            <button onclick="SLBCheckout.removeCartItem('${itemId}')" title="Remove item" class="p-1.5 text-stone-400 hover:text-rose-600 transition-colors">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        if (cartSummaryContainer) {
+            cartSummaryContainer.innerHTML = `
+                <div class="flex justify-between text-[#75655D]">
+                    <span>Items Subtotal (${summary.totalCount} items):</span>
+                    <span class="font-bold text-[#5A2D1A]">₹${summary.subtotal}</span>
+                </div>
+                <div class="flex justify-between text-[#75655D]">
+                    <span>Fulfillment (${checkoutState.fulfillmentType === 'delivery' ? 'Home Delivery' : 'Store Pickup'}):</span>
+                    <span class="font-bold ${checkoutState.fulfillmentType === 'delivery' ? 'text-amber-700' : 'text-emerald-700'}">
+                        ${checkoutState.fulfillmentType === 'delivery' ? '₹50' : 'FREE (₹0)'}
+                    </span>
+                </div>
+                ${summary.discount > 0 ? `
+                <div class="flex justify-between text-emerald-700">
+                    <span>Discount (FRESH10):</span>
+                    <span class="font-bold">-₹${summary.discount}</span>
+                </div>` : ''}
+                <div class="pt-2 border-t border-[#A94F20]/15 flex justify-between items-center text-sm font-serif">
+                    <span class="font-bold text-[#5A2D1A]">Estimated Total Amount:</span>
+                    <span class="font-extrabold text-base text-[#A94F20]">₹${summary.grandTotal}</span>
+                </div>
+            `;
+        }
+    }
+
+    function updateCartItemQty(itemId, delta) {
+        if (!window.SLBCart) return;
+        window.SLBCart.updateQuantity(itemId, delta);
+        renderStep1Cart();
+        if (window.App && window.App.updateCartUI) window.App.updateCartUI();
+    }
+
+    function removeCartItem(itemId) {
+        if (!window.SLBCart) return;
+        window.SLBCart.removeItem(itemId);
+        renderStep1Cart();
+        if (window.App && window.App.updateCartUI) window.App.updateCartUI();
+    }
     }
 
     /**
@@ -423,6 +540,9 @@ window.SLBCheckout = (function () {
         validateStep,
         nextStep,
         prevStep,
-        goToStep
+        goToStep,
+        renderStep1Cart,
+        updateCartItemQty,
+        removeCartItem
     };
 })();

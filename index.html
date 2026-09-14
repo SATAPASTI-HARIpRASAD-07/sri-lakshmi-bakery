@@ -510,18 +510,36 @@
 
       <!-- STEP 1 PANEL: CART REVIEW -->
       <div id="checkout-step-panel-1" class="space-y-6">
-        <h3 class="font-serif text-2xl font-bold text-[#5A2D1A]">Step 1: Review Your Cart</h3>
-        <div id="checkout-step-1-error" class="hidden p-3 bg-rose-100 text-rose-800 rounded-xl text-xs font-semibold"></div>
-        
-        <div class="bg-white rounded-2xl border border-[#A94F20]/20 p-4 space-y-3">
-          <p class="text-xs text-[#75655D]">Review selected bakery items before entering customer details.</p>
+        <div class="flex items-center justify-between">
+          <h3 class="font-serif text-2xl font-bold text-[#5A2D1A]">Step 1: Review Your Cart</h3>
           <button onclick="window.App.openCartDrawer()" class="text-xs font-bold text-[#A94F20] hover:underline flex items-center gap-1">
             <i class="fas fa-pencil-alt me-1"></i> Edit Cart Drawer Items
           </button>
         </div>
+        
+        <div id="checkout-step-1-error" class="hidden p-3 bg-rose-100 text-rose-800 rounded-xl text-xs font-semibold"></div>
 
-        <div class="flex justify-end pt-4">
-          <button onclick="SLBCheckout.nextStep()" class="btn-primary">
+        <!-- Dynamic Cart Items Container -->
+        <div id="checkout-cart-items-container" class="space-y-3 max-h-[320px] overflow-y-auto pr-1"></div>
+
+        <!-- Dynamic Cart Summary Breakdown -->
+        <div id="checkout-cart-summary-container" class="bg-white rounded-2xl border border-[#A94F20]/20 p-5 space-y-2 text-xs"></div>
+
+        <!-- Empty Cart View (Shown when cart has no items) -->
+        <div id="checkout-empty-cart-view" class="hidden text-center py-10 space-y-4 bg-white rounded-2xl border border-[#A94F20]/20 p-6">
+          <div class="w-16 h-16 rounded-full bg-[#A94F20]/10 text-[#A94F20] flex items-center justify-center mx-auto text-2xl">
+            <i class="fas fa-shopping-bag"></i>
+          </div>
+          <h4 class="font-serif text-xl font-bold text-[#5A2D1A]">Your cart is empty</h4>
+          <p class="text-xs text-[#75655D]">Add some delicious bakery items before checkout.</p>
+          <a href="#products-section" onclick="window.App.closeCheckoutStepper()" class="inline-flex items-center gap-2 btn-primary text-xs px-6 py-3">
+            <i class="fas fa-utensils"></i>
+            <span>Browse Products</span>
+          </a>
+        </div>
+
+        <div class="flex justify-end pt-4 border-t border-[#A94F20]/15">
+          <button id="btn-step1-continue" onclick="SLBCheckout.nextStep()" class="btn-primary">
             <span>Continue to Customer Details</span>
             <i class="fas fa-arrow-right"></i>
           </button>
@@ -755,6 +773,24 @@
 
       <!-- Tab Content Area -->
       <div id="admin-tab-body" class="min-h-[300px]"></div>
+    </div>
+  </div>
+
+  <!-- GALLERY LIGHTBOX MODAL -->
+  <div id="lightbox-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/85 modal-backdrop">
+    <div class="relative max-w-4xl w-full bg-[#1C1613] rounded-3xl overflow-hidden border border-[#D9823B]/30 shadow-2xl flex flex-col items-center p-4 md:p-6">
+      <button onclick="window.App.closeLightbox()" class="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-black/50 text-white hover:bg-[#A94F20] transition-colors flex items-center justify-center">
+        <i data-lucide="x" class="w-6 h-6"></i>
+      </button>
+
+      <div class="relative w-full max-h-[75vh] flex items-center justify-center overflow-hidden rounded-2xl bg-black/40">
+        <img id="lightbox-img" src="" alt="Gallery Image" class="max-w-full max-h-[70vh] object-contain rounded-xl shadow-lg transition-transform duration-300" />
+      </div>
+
+      <div class="mt-4 text-center space-y-1">
+        <h4 id="lightbox-caption" class="font-serif text-xl md:text-2xl font-bold text-[#FFF9F2]">Bakery Gallery</h4>
+        <p class="text-xs text-[#D9823B] font-semibold uppercase tracking-widest">Sri Lakshmi Bakery Pavilion</p>
+      </div>
     </div>
   </div>
 
