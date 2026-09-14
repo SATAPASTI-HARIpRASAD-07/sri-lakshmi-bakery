@@ -1,6 +1,5 @@
 /**
- * SRI LAKSHMI BAKERY - Master Application Logic
- * Updated with Order Confirmation Modal, Seating & Birthday Lounge renderer, Cool Drinks & Indian Cakes filters.
+ * SRI LAKSHMI BAKERY - Master Application Logic (Updated with E-Commerce, Custom Cake Builder, Pre-Orders, Events & Owner Admin Dashboard)
  */
 
 window.App = (function () {
@@ -8,8 +7,27 @@ window.App = (function () {
   let selectedCategory = 'all';
   let searchQuery = '';
 
+  // Customization state for currently viewed cake
+  let currentCustomization = {
+    weight: '0.5kg',
+    type: 'eggless',
+    flavour: 'Belgian Dark Chocolate',
+    message: '',
+    instructions: ''
+  };
+
+  // Checkout pre-order state
+  let checkoutState = {
+    pickupDate: new Date().toISOString().split('T')[0],
+    pickupSlot: '05:00 PM',
+    paymentMethod: 'upi',
+    couponCode: '',
+    discountAmount: 0
+  };
+
   function init() {
     loadCartFromStorage();
+    initAdminStorage();
     initPreloader();
     initStickyNav();
     renderCategories();
@@ -20,13 +38,26 @@ window.App = (function () {
     renderQualityFeatures();
     initStatsCounter();
     updateCartUI();
-    
-    // Init 3D Hero Canvas
+
     if (window.Bakery3DEngine) {
       window.Bakery3DEngine.initHeroScene('hero-3d-canvas');
     }
 
     if (window.lucide) window.lucide.createIcons();
+  }
+
+  function initAdminStorage() {
+    try {
+      if (!localStorage.getItem('sri_lakshmi_admin_orders')) {
+        localStorage.setItem('sri_lakshmi_admin_orders', JSON.stringify(window.BAKERY_DATA.initialAdminData.orders));
+      }
+      if (!localStorage.getItem('sri_lakshmi_custom_requests')) {
+        localStorage.setItem('sri_lakshmi_custom_requests', JSON.stringify(window.BAKERY_DATA.initialAdminData.customRequests));
+      }
+      if (!localStorage.getItem('sri_lakshmi_event_bookings')) {
+        localStorage.setItem('sri_lakshmi_event_bookings', JSON.stringify(window.BAKERY_DATA.initialAdminData.eventBookings));
+      }
+    } catch (e) {}
   }
 
   function initPreloader() {
@@ -146,9 +177,9 @@ window.App = (function () {
             <span class="font-display text-xl font-extrabold text-[#5A2D1A]">${p.price}</span>
           </div>
 
-          <button onclick="window.App.addToCart('${p.id}')" class="px-4 py-2.5 bg-[#A94F20] text-white rounded-full text-xs font-bold hover:bg-[#5A2D1A] transition-colors flex items-center gap-1.5 shadow-md">
-            <i data-lucide="plus" class="w-4 h-4"></i>
-            <span>Add</span>
+          <button onclick="window.App.openQuickView('${p.id}')" class="px-4 py-2.5 bg-[#A94F20] text-white rounded-full text-xs font-bold hover:bg-[#5A2D1A] transition-colors flex items-center gap-1.5 shadow-md">
+            <i data-lucide="sliders" class="w-3.5 h-3.5"></i>
+            <span>${p.isCake ? 'Customize' : 'Order'}</span>
           </button>
         </div>
       </div>
@@ -162,29 +193,31 @@ window.App = (function () {
     renderProducts();
   }
 
-  /**
-   * RENDER DINING & SEATING AREA SECTION
-   */
   function renderSeatingAreas() {
     const container = document.getElementById('seating-areas-grid');
     if (!container || !window.BAKERY_DATA) return;
 
     const areas = window.BAKERY_DATA.seatingAreas;
     container.innerHTML = areas.map(a => `
-      <div class="bakery-card group overflow-hidden">
-        <div class="relative aspect-video overflow-hidden">
-          <img src="${a.image}" alt="${a.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-          <span class="absolute top-4 left-4 bg-[#5A2D1A] text-white text-[11px] uppercase font-bold tracking-widest px-3 py-1 rounded-full shadow-lg">
-            ${a.badge}
-          </span>
-        </div>
-        <div class="p-6 space-y-3">
-          <h3 class="font-serif text-2xl font-bold text-[#5A2D1A]">${a.title}</h3>
-          <p class="text-xs text-[#75655D] leading-relaxed">${a.desc}</p>
-          <div class="pt-2 flex items-center gap-2 text-xs font-bold text-[#A94F20]">
-            <i data-lucide="party-popper" class="w-4 h-4 text-[#D9823B]"></i>
-            <span>Reserve Table / Birthday Space Available</span>
+      <div class="bakery-card group overflow-hidden flex flex-col justify-between">
+        <div>
+          <div class="relative aspect-video overflow-hidden">
+            <img src="${a.image}" alt="${a.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+            <span class="absolute top-4 left-4 bg-[#5A2D1A] text-white text-[11px] uppercase font-bold tracking-widest px-3 py-1 rounded-full shadow-lg">
+              ${a.badge}
+            </span>
           </div>
+          <div class="p-6 space-y-3">
+            <h3 class="font-serif text-2xl font-bold text-[#5A2D1A]">${a.title}</h3>
+            <p class="text-xs text-[#75655D] leading-relaxed">${a.desc}</p>
+          </div>
+        </div>
+
+        <div class="p-6 pt-0">
+          <button onclick="window.App.openEventModal()" class="w-full py-3 bg-[#FFF9F2] border border-[#A94F20]/30 text-[#A94F20] font-bold rounded-xl text-xs hover:bg-[#A94F20] hover:text-white transition-colors flex items-center justify-center gap-2">
+            <i data-lucide="party-popper" class="w-4 h-4 text-[#D9823B]"></i>
+            <span>Reserve Party Space</span>
+          </button>
         </div>
       </div>
     `).join('');
@@ -192,22 +225,56 @@ window.App = (function () {
     if (window.lucide) window.lucide.createIcons();
   }
 
+  /**
+   * ENHANCED QUICK VIEW & CAKE CUSTOMIZER
+   */
   function openQuickView(productId) {
     const product = window.BAKERY_DATA.products.find(p => p.id === productId);
     const modal = document.getElementById('quick-view-modal');
     const content = document.getElementById('quick-view-content');
     if (!product || !modal || !content) return;
 
+    // Reset customization state
+    currentCustomization = {
+      weight: '0.5kg',
+      type: 'eggless',
+      flavour: window.BAKERY_DATA.cakeCustomizer.flavours[0],
+      message: '',
+      instructions: ''
+    };
+
+    renderQuickViewContent(product);
+
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    if (window.lucide) window.lucide.createIcons();
+  }
+
+  function renderQuickViewContent(product) {
+    const content = document.getElementById('quick-view-content');
+    if (!content) return;
+
+    const weights = window.BAKERY_DATA.cakeCustomizer.weights;
+    const types = window.BAKERY_DATA.cakeCustomizer.types;
+
+    // Calculate dynamic price based on weight & eggless option
+    const selectedWeightObj = weights.find(w => w.id === currentCustomization.weight) || weights[0];
+    const selectedTypeObj = types.find(t => t.id === currentCustomization.type) || types[0];
+
+    const basePrice = product.rawPrice;
+    let finalPrice = Math.round(basePrice * selectedWeightObj.multiplier) + selectedTypeObj.extraPrice;
+    if (!product.isCake) finalPrice = basePrice;
+
     content.innerHTML = `
-      <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
-        <div class="md:col-span-6 relative aspect-square overflow-hidden rounded-2xl border border-[#A94F20]/20">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 max-h-[80vh] overflow-y-auto pr-2">
+        <div class="md:col-span-5 relative aspect-square overflow-hidden rounded-2xl border border-[#A94F20]/20">
           <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover" />
           <span class="absolute top-4 left-4 bg-[#5A2D1A] text-white text-xs font-bold px-3 py-1 rounded-full">
-            ${product.unit}
+            ${product.isCake ? selectedWeightObj.label : product.unit}
           </span>
         </div>
 
-        <div class="md:col-span-6 flex flex-col justify-between space-y-4">
+        <div class="md:col-span-7 flex flex-col justify-between space-y-4">
           <div>
             <div class="flex justify-between items-center mb-2">
               <span class="text-xs uppercase tracking-widest text-[#A94F20] font-bold">${product.category}</span>
@@ -217,38 +284,78 @@ window.App = (function () {
               </div>
             </div>
 
-            <h3 class="font-serif text-3xl font-bold text-[#5A2D1A] mb-3">${product.name}</h3>
+            <h3 class="font-serif text-2xl md:text-3xl font-bold text-[#5A2D1A] mb-2">${product.name}</h3>
             <p class="text-xs text-[#75655D] leading-relaxed mb-4">${product.fullDesc}</p>
 
-            <div class="mb-4">
-              <span class="text-xs font-bold uppercase text-[#5A2D1A] block mb-2">Ingredients</span>
-              <div class="flex flex-wrap gap-2">
-                ${product.ingredients.map(ing => `<span class="text-xs bg-[#FFF9F2] border border-[#A94F20]/30 text-[#A94F20] px-3 py-1 rounded-lg">${ing}</span>`).join('')}
-              </div>
-            </div>
+            ${product.isCake ? `
+              <!-- CAKE CUSTOMIZER CONTROLS -->
+              <div class="space-y-4 p-4 bg-[#FFF9F2] rounded-2xl border border-[#A94F20]/15 mb-4 text-xs">
+                <!-- Weight Selection -->
+                <div>
+                  <label class="font-bold text-[#5A2D1A] block mb-2">1. Select Cake Size / Weight</label>
+                  <div class="grid grid-cols-4 gap-2">
+                    ${weights.map(w => `
+                      <button onclick="window.App.updateCakeCustomization('weight', '${w.id}', '${product.id}')" class="py-2 px-1 rounded-xl text-xs font-bold border transition-all ${currentCustomization.weight === w.id ? 'bg-[#5A2D1A] text-white border-[#5A2D1A]' : 'bg-white text-[#241812] border-[#A94F20]/20 hover:border-[#D9823B]'}">
+                        ${w.label}
+                      </button>
+                    `).join('')}
+                  </div>
+                </div>
 
-            <div class="text-2xl font-extrabold text-[#5A2D1A] font-display">
-              ${product.price}
+                <!-- Type Selection (Egg / Eggless) -->
+                <div>
+                  <label class="font-bold text-[#5A2D1A] block mb-2">2. Cake Preparation Type</label>
+                  <div class="grid grid-cols-2 gap-2">
+                    ${types.map(t => `
+                      <button onclick="window.App.updateCakeCustomization('type', '${t.id}', '${product.id}')" class="py-2 px-2 rounded-xl text-xs font-bold border transition-all ${currentCustomization.type === t.id ? 'bg-[#A94F20] text-white border-[#A94F20]' : 'bg-white text-[#241812] border-[#A94F20]/20 hover:border-[#D9823B]'}">
+                        ${t.label}
+                      </button>
+                    `).join('')}
+                  </div>
+                </div>
+
+                <!-- Custom Message on Cake -->
+                <div>
+                  <label class="font-bold text-[#5A2D1A] block mb-1">3. Message Written on Cake</label>
+                  <input type="text" value="${currentCustomization.message}" onchange="window.App.updateCakeCustomization('message', this.value, '${product.id}')" placeholder="e.g. Happy Birthday Ananya!" class="w-full bg-white border border-[#A94F20]/20 rounded-xl p-2.5 outline-none focus:border-[#D9823B]" />
+                </div>
+
+                <!-- Special Baking Instructions -->
+                <div>
+                  <label class="font-bold text-[#5A2D1A] block mb-1">4. Special Custom Instructions</label>
+                  <textarea rows="2" onchange="window.App.updateCakeCustomization('instructions', this.value, '${product.id}')" placeholder="e.g. Less sugar, extra chocolate curls..." class="w-full bg-white border border-[#A94F20]/20 rounded-xl p-2.5 outline-none focus:border-[#D9823B]">${currentCustomization.instructions}</textarea>
+                </div>
+              </div>
+            ` : ''}
+
+            <!-- Price Display -->
+            <div class="flex items-baseline gap-2">
+              <span class="text-xs text-[#75655D]">Calculated Price:</span>
+              <span class="text-2xl font-extrabold text-[#5A2D1A] font-display">₹${finalPrice}</span>
             </div>
           </div>
 
           <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-[#A94F20]/15">
-            <button onclick="window.App.addToCart('${product.id}'); window.App.closeQuickView();" class="btn-primary flex-1 justify-center">
+            <button onclick="window.App.addCustomizedToCart('${product.id}', ${finalPrice}); window.App.closeQuickView();" class="btn-primary flex-1 justify-center text-xs">
               <i data-lucide="shopping-bag" class="w-4 h-4"></i>
-              <span>Add to Cart</span>
+              <span>Add Customized Item to Cart</span>
             </button>
-            <button onclick="window.App.triggerOrderSuccess('${product.name}', ${product.rawPrice})" class="btn-secondary flex-1 justify-center">
+            <button onclick="window.App.addCustomizedToCart('${product.id}', ${finalPrice}); window.App.closeQuickView(); window.App.openCartDrawer();" class="btn-secondary flex-1 justify-center text-xs">
               <i data-lucide="check-circle" class="w-4 h-4"></i>
-              <span>Place Instant Order</span>
+              <span>Buy Now</span>
             </button>
           </div>
         </div>
       </div>
     `;
 
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
     if (window.lucide) window.lucide.createIcons();
+  }
+
+  function updateCakeCustomization(field, val, productId) {
+    currentCustomization[field] = val;
+    const product = window.BAKERY_DATA.products.find(p => p.id === productId);
+    if (product) renderQuickViewContent(product);
   }
 
   function closeQuickView() {
@@ -257,6 +364,26 @@ window.App = (function () {
       modal.classList.add('hidden');
       modal.classList.remove('flex');
     }
+  }
+
+  function addCustomizedToCart(productId, finalPrice) {
+    const product = window.BAKERY_DATA.products.find(p => p.id === productId);
+    if (!product) return;
+
+    const customizedItem = {
+      ...product,
+      id: `${product.id}-${Date.now()}`,
+      originalId: product.id,
+      name: product.isCake ? `${product.name} (${currentCustomization.weight})` : product.name,
+      rawPrice: finalPrice,
+      customization: product.isCake ? { ...currentCustomization } : null,
+      quantity: 1
+    };
+
+    cart.push(customizedItem);
+    saveCartToStorage();
+    updateCartUI();
+    showToast(`Added ${customizedItem.name} to Cart`);
   }
 
   function loadCartFromStorage() {
@@ -278,6 +405,11 @@ window.App = (function () {
     const product = window.BAKERY_DATA.products.find(p => p.id === productId);
     if (!product) return;
 
+    if (product.isCake) {
+      openQuickView(productId);
+      return;
+    }
+
     const existing = cart.find(item => item.id === productId);
     if (existing) {
       existing.quantity += 1;
@@ -290,22 +422,38 @@ window.App = (function () {
     showToast(`Added ${product.name} to Cart`);
   }
 
-  function updateQuantity(productId, delta) {
-    const item = cart.find(i => i.id === productId);
+  function updateQuantity(cartItemId, delta) {
+    const item = cart.find(i => i.id === cartItemId);
     if (!item) return;
 
     item.quantity += delta;
     if (item.quantity <= 0) {
-      cart = cart.filter(i => i.id !== productId);
+      cart = cart.filter(i => i.id !== cartItemId);
     }
 
     saveCartToStorage();
     updateCartUI();
   }
 
-  function removeFromCart(productId) {
-    cart = cart.filter(i => i.id !== productId);
+  function removeFromCart(cartItemId) {
+    cart = cart.filter(i => i.id !== cartItemId);
     saveCartToStorage();
+    updateCartUI();
+  }
+
+  function applyCoupon(code) {
+    checkoutState.couponCode = code.trim().toUpperCase();
+    if (checkoutState.couponCode === 'FRESH10') {
+      showToast('Coupon FRESH10 Applied! 10% Discount Saved.');
+    } else {
+      checkoutState.couponCode = '';
+      showToast('Invalid Coupon Code');
+    }
+    updateCartUI();
+  }
+
+  function updateCheckoutState(key, val) {
+    checkoutState[key] = val;
     updateCartUI();
   }
 
@@ -320,6 +468,7 @@ window.App = (function () {
 
     const container = document.getElementById('cart-drawer-items');
     const subtotalElem = document.getElementById('cart-subtotal');
+    const discountElem = document.getElementById('cart-discount');
     const totalElem = document.getElementById('cart-total');
 
     if (!container) return;
@@ -333,36 +482,100 @@ window.App = (function () {
         </div>
       `;
       if (subtotalElem) subtotalElem.innerText = '₹0';
+      if (discountElem) discountElem.innerText = '₹0';
       if (totalElem) totalElem.innerText = '₹0';
       if (window.lucide) window.lucide.createIcons();
       return;
     }
 
     const subtotal = cart.reduce((acc, item) => acc + (item.rawPrice * item.quantity), 0);
+    let discount = 0;
+    if (checkoutState.couponCode === 'FRESH10') {
+      discount = Math.round(subtotal * 0.10);
+    }
+    const finalTotal = subtotal - discount;
 
-    container.innerHTML = cart.map(item => `
-      <div class="flex items-center justify-between p-4 bg-white rounded-2xl border border-[#A94F20]/15 shadow-sm">
-        <div class="flex items-center gap-3">
-          <img src="${item.image}" alt="${item.name}" class="w-14 h-14 rounded-xl object-cover" />
-          <div>
-            <h4 class="text-xs font-bold text-[#5A2D1A] line-clamp-1">${item.name}</h4>
-            <span class="text-xs text-[#A94F20] font-bold">₹${item.rawPrice * item.quantity}</span>
+    const pickupSlots = window.BAKERY_DATA.pickupSlots;
+
+    container.innerHTML = `
+      <div class="space-y-3">
+        ${cart.map(item => `
+          <div class="flex items-center justify-between p-4 bg-white rounded-2xl border border-[#A94F20]/15 shadow-sm">
+            <div class="flex items-center gap-3">
+              <img src="${item.image}" alt="${item.name}" class="w-14 h-14 rounded-xl object-cover" />
+              <div>
+                <h4 class="text-xs font-bold text-[#5A2D1A] line-clamp-1">${item.name}</h4>
+                ${item.customization ? `
+                  <span class="text-[10px] text-[#A94F20] block font-semibold">${item.customization.type === 'eggless' ? '🌱 Eggless' : '🥚 With Egg'} ${item.customization.message ? '| Msg: "' + item.customization.message + '"' : ''}</span>
+                ` : ''}
+                <span class="text-xs text-[#A94F20] font-bold">₹${item.rawPrice * item.quantity}</span>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <button onclick="window.App.updateQuantity('${item.id}', -1)" class="w-7 h-7 rounded-lg bg-[#FFF9F2] text-[#5A2D1A] font-bold hover:bg-[#A94F20] hover:text-white transition-colors">-</button>
+              <span class="text-xs font-bold px-1">${item.quantity}</span>
+              <button onclick="window.App.updateQuantity('${item.id}', 1)" class="w-7 h-7 rounded-lg bg-[#FFF9F2] text-[#5A2D1A] font-bold hover:bg-[#A94F20] hover:text-white transition-colors">+</button>
+              <button onclick="window.App.removeFromCart('${item.id}')" class="ml-2 text-[#75655D] hover:text-red-500">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+        `).join('')}
+
+        <!-- PRE-ORDER PICKUP SLOT SELECTOR -->
+        <div class="p-4 bg-white rounded-2xl border border-[#A94F20]/15 space-y-3 text-xs">
+          <span class="font-bold text-[#5A2D1A] block">📅 Select Pre-Order Pickup Slot</span>
+          
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="text-[10px] text-[#75655D] block mb-1">Pickup Date</label>
+              <input type="date" value="${checkoutState.pickupDate}" onchange="window.App.updateCheckoutState('pickupDate', this.value)" class="w-full bg-[#FFF9F2] border border-[#A94F20]/20 rounded-xl p-2 outline-none font-bold text-[#5A2D1A]" />
+            </div>
+
+            <div>
+              <label class="text-[10px] text-[#75655D] block mb-1">Pickup Time Slot</label>
+              <select onchange="window.App.updateCheckoutState('pickupSlot', this.value)" class="w-full bg-[#FFF9F2] border border-[#A94F20]/20 rounded-xl p-2 outline-none font-bold text-[#5A2D1A]">
+                ${pickupSlots.map(s => `<option value="${s.time}" ${checkoutState.pickupSlot === s.time ? 'selected' : ''}>${s.time}</option>`).join('')}
+              </select>
+            </div>
+          </div>
+
+          <!-- MULTI-PAYMENT METHOD SELECTION -->
+          <div class="pt-2 border-t border-[#A94F20]/10">
+            <span class="font-bold text-[#5A2D1A] block mb-2">💳 Payment Method</span>
+            <div class="space-y-1.5 font-bold">
+              <label class="flex items-center gap-2 p-2 rounded-xl border ${checkoutState.paymentMethod === 'upi' ? 'bg-[#5A2D1A] text-white border-[#5A2D1A]' : 'bg-[#FFF9F2] text-[#241812] border-[#A94F20]/15'}">
+                <input type="radio" name="paymentMethod" value="upi" ${checkoutState.paymentMethod === 'upi' ? 'checked' : ''} onchange="window.App.updateCheckoutState('paymentMethod', 'upi')" class="accent-[#D9823B]" />
+                <span>📱 Instant UPI (Google Pay, PhonePe, Paytm)</span>
+              </label>
+
+              <label class="flex items-center gap-2 p-2 rounded-xl border ${checkoutState.paymentMethod === 'card' ? 'bg-[#5A2D1A] text-white border-[#5A2D1A]' : 'bg-[#FFF9F2] text-[#241812] border-[#A94F20]/15'}">
+                <input type="radio" name="paymentMethod" value="card" ${checkoutState.paymentMethod === 'card' ? 'checked' : ''} onchange="window.App.updateCheckoutState('paymentMethod', 'card')" class="accent-[#D9823B]" />
+                <span>💳 Credit / Debit Card (Razorpay)</span>
+              </label>
+
+              <label class="flex items-center gap-2 p-2 rounded-xl border ${checkoutState.paymentMethod === 'cod' ? 'bg-[#5A2D1A] text-white border-[#5A2D1A]' : 'bg-[#FFF9F2] text-[#241812] border-[#A94F20]/15'}">
+                <input type="radio" name="paymentMethod" value="cod" ${checkoutState.paymentMethod === 'cod' ? 'checked' : ''} onchange="window.App.updateCheckoutState('paymentMethod', 'cod')" class="accent-[#D9823B]" />
+                <span>💵 Pay Cash on Pickup</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- COUPON CODE FIELD -->
+          <div class="pt-2 flex gap-2">
+            <input type="text" id="coupon-input-field" placeholder="Promo code (e.g. FRESH10)" value="${checkoutState.couponCode}" class="flex-1 bg-[#FFF9F2] border border-[#A94F20]/20 rounded-xl px-3 py-2 text-xs uppercase outline-none font-mono" />
+            <button onclick="window.App.applyCoupon(document.getElementById('coupon-input-field').value)" class="px-4 py-2 bg-[#5A2D1A] text-white font-bold rounded-xl text-xs hover:bg-[#A94F20]">
+              Apply
+            </button>
           </div>
         </div>
-
-        <div class="flex items-center gap-2">
-          <button onclick="window.App.updateQuantity('${item.id}', -1)" class="w-7 h-7 rounded-lg bg-[#FFF9F2] text-[#5A2D1A] font-bold hover:bg-[#A94F20] hover:text-white transition-colors">-</button>
-          <span class="text-xs font-bold px-1">${item.quantity}</span>
-          <button onclick="window.App.updateQuantity('${item.id}', 1)" class="w-7 h-7 rounded-lg bg-[#FFF9F2] text-[#5A2D1A] font-bold hover:bg-[#A94F20] hover:text-white transition-colors">+</button>
-          <button onclick="window.App.removeFromCart('${item.id}')" class="ml-2 text-[#75655D] hover:text-red-500">
-            <i data-lucide="trash-2" class="w-4 h-4"></i>
-          </button>
-        </div>
       </div>
-    `).join('');
+    `;
 
     if (subtotalElem) subtotalElem.innerText = `₹${subtotal}`;
-    if (totalElem) totalElem.innerText = `₹${subtotal}`;
+    if (discountElem) discountElem.innerText = `-₹${discount}`;
+    if (totalElem) totalElem.innerText = `₹${finalTotal}`;
 
     if (window.lucide) window.lucide.createIcons();
   }
@@ -384,34 +597,49 @@ window.App = (function () {
   }
 
   /**
-   * PROFESSIONAL ORDER SUCCESSFUL CONFIRMATION MODAL
+   * TRIGGER ORDER SUCCESS & SAVE TO ADMIN DASHBOARD
    */
-  function triggerOrderSuccess(itemName, itemPrice) {
+  function triggerOrderSuccess() {
+    if (cart.length === 0) {
+      showToast('Your cart is empty');
+      return;
+    }
+
     closeQuickView();
     closeCartDrawer();
 
+    const subtotal = cart.reduce((acc, item) => acc + (item.rawPrice * item.quantity), 0);
+    let discount = 0;
+    if (checkoutState.couponCode === 'FRESH10') discount = Math.round(subtotal * 0.10);
+    const finalTotal = subtotal - discount;
+
     const orderId = `SLB-${Math.floor(10000 + Math.random() * 90000)}`;
+    const newOrder = {
+      id: orderId,
+      customerName: "Customer Order",
+      phone: "+91 98765 43210",
+      items: cart.map(i => ({ name: i.name, quantity: i.quantity, price: i.rawPrice * i.quantity })),
+      total: finalTotal,
+      status: "Preparing",
+      pickupDate: checkoutState.pickupDate,
+      pickupSlot: checkoutState.pickupSlot,
+      paymentMethod: checkoutState.paymentMethod.toUpperCase(),
+      createdAt: new Date().toLocaleString()
+    };
+
+    // Save to Admin Orders in LocalStorage
+    try {
+      const existingOrders = JSON.parse(localStorage.getItem('sri_lakshmi_admin_orders') || '[]');
+      existingOrders.unshift(newOrder);
+      localStorage.setItem('sri_lakshmi_admin_orders', JSON.stringify(existingOrders));
+    } catch (e) {}
+
     const modal = document.getElementById('order-success-modal');
     const content = document.getElementById('order-success-content');
     if (!modal || !content) return;
 
-    let itemsList = '';
-    let totalAmount = 0;
-
-    if (itemName && itemPrice) {
-      itemsList = `<div class="flex justify-between font-bold text-xs"><span>${itemName}</span><span>₹${itemPrice}</span></div>`;
-      totalAmount = itemPrice;
-    } else if (cart.length > 0) {
-      itemsList = cart.map(i => `<div class="flex justify-between text-xs"><span>${i.name} x ${i.quantity}</span><span class="font-bold">₹${i.rawPrice * i.quantity}</span></div>`).join('');
-      totalAmount = cart.reduce((acc, item) => acc + (item.rawPrice * item.quantity), 0);
-    } else {
-      itemsList = `<div class="flex justify-between font-bold text-xs"><span>Fresh Bakery Box</span><span>₹499</span></div>`;
-      totalAmount = 499;
-    }
-
     content.innerHTML = `
       <div class="text-center space-y-6 py-4">
-        <!-- Animated Success Checkmark Icon -->
         <div class="w-20 h-20 rounded-full bg-[#25D366]/15 border-2 border-[#25D366] text-[#25D366] flex items-center justify-center mx-auto shadow-xl animate-bounce">
           <i data-lucide="check" class="w-10 h-10"></i>
         </div>
@@ -424,7 +652,6 @@ window.App = (function () {
           </p>
         </div>
 
-        <!-- Order Specs Badge Card -->
         <div class="p-6 bg-[#FFF9F2] border border-[#A94F20]/20 rounded-2xl max-w-md mx-auto text-left space-y-3 text-xs">
           <div class="flex justify-between items-center pb-3 border-b border-[#A94F20]/15">
             <span class="text-[#75655D] uppercase font-bold text-[10px]">TRACKING ID</span>
@@ -432,22 +659,21 @@ window.App = (function () {
           </div>
 
           <div class="flex justify-between items-center pb-3 border-b border-[#A94F20]/15">
-            <span class="text-[#75655D] uppercase font-bold text-[10px]">ESTIMATED TIME</span>
-            <span class="font-bold text-[#A94F20]">⏱ 15 - 20 Mins</span>
+            <span class="text-[#75655D] uppercase font-bold text-[10px]">PRE-ORDER PICKUP</span>
+            <span class="font-bold text-[#A94F20]">${checkoutState.pickupDate} @ ${checkoutState.pickupSlot}</span>
           </div>
 
           <div class="space-y-1 pt-1">
             <span class="text-[#75655D] uppercase font-bold text-[10px] block mb-1">ORDERED ITEMS</span>
-            ${itemsList}
+            ${cart.map(i => `<div class="flex justify-between text-xs"><span>${i.name} x ${i.quantity}</span><span class="font-bold">₹${i.rawPrice * i.quantity}</span></div>`).join('')}
           </div>
 
           <div class="flex justify-between items-center pt-3 border-t border-[#A94F20]/15 text-sm font-extrabold text-[#5A2D1A]">
             <span>TOTAL AMOUNT PAID</span>
-            <span class="text-[#A94F20]">₹${totalAmount}</span>
+            <span class="text-[#A94F20]">₹${finalTotal}</span>
           </div>
         </div>
 
-        <!-- Action CTAs -->
         <div class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto pt-2">
           <button onclick="window.App.checkoutViaWhatsApp()" class="btn-secondary flex-1 justify-center text-xs">
             <i data-lucide="message-circle" class="w-4 h-4"></i>
@@ -460,7 +686,7 @@ window.App = (function () {
       </div>
     `;
 
-    // Clear cart on successful order
+    // Reset cart
     cart = [];
     saveCartToStorage();
     updateCartUI();
@@ -476,6 +702,257 @@ window.App = (function () {
       modal.classList.add('hidden');
       modal.classList.remove('flex');
     }
+  }
+
+  /**
+   * CUSTOM CAKE QUOTE REQUEST FORM SUBMISSION
+   */
+  function submitCustomCakeRequest(e) {
+    e.preventDefault();
+    const form = e.target;
+    const reqId = `CR-${Math.floor(100 + Math.random() * 900)}`;
+
+    const newReq = {
+      id: reqId,
+      customerName: form.customerName.value,
+      phone: form.phone.value,
+      occasion: form.occasion.value,
+      cakeType: form.cakeType.value,
+      flavour: form.flavour.value,
+      weight: form.weight.value,
+      eggless: form.eggless.value,
+      pickupDate: form.pickupDate.value,
+      pickupTime: form.pickupTime.value,
+      message: form.cakeMessage.value,
+      status: "Pending Quote",
+      quotedPrice: null,
+      referenceImg: "https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=400&q=80"
+    };
+
+    try {
+      const existingReqs = JSON.parse(localStorage.getItem('sri_lakshmi_custom_requests') || '[]');
+      existingReqs.unshift(newReq);
+      localStorage.setItem('sri_lakshmi_custom_requests', JSON.stringify(existingReqs));
+    } catch (err) {}
+
+    showToast(`Custom Cake Request ${reqId} Submitted to Owner!`);
+    form.reset();
+
+    // Show Confirmation Alert
+    alert(`Thank you ${newReq.customerName}! Your Custom Cake Request (${reqId}) has been sent directly to the Bakery Owner. We will review your design & contact you with the final price quote!`);
+  }
+
+  /**
+   * EVENT SPACE BOOKING SUBMISSION
+   */
+  function submitEventBooking(e) {
+    e.preventDefault();
+    const form = e.target;
+    const evId = `EV-${Math.floor(200 + Math.random() * 800)}`;
+
+    const newEv = {
+      id: evId,
+      customerName: form.customerName.value,
+      phone: form.phone.value,
+      occasion: form.occasion.value,
+      guests: form.guests.value,
+      seatingArea: form.seatingArea.value,
+      date: form.date.value,
+      slot: form.slot.value,
+      status: "Confirmed"
+    };
+
+    try {
+      const existingEvs = JSON.parse(localStorage.getItem('sri_lakshmi_event_bookings') || '[]');
+      existingEvs.unshift(newEv);
+      localStorage.setItem('sri_lakshmi_event_bookings', JSON.stringify(existingEvs));
+    } catch (err) {}
+
+    showToast(`Event Booking ${evId} Confirmed!`);
+    form.reset();
+    alert(`Congratulations ${newEv.customerName}! Your party reservation for ${newEv.occasion} (${newEv.date}) is registered. See you at Sri Lakshmi Bakery!`);
+  }
+
+  /**
+   * OWNER ADMIN DASHBOARD ENGINE
+   */
+  function openAdminDashboard() {
+    const modal = document.getElementById('admin-modal');
+    if (!modal) return;
+
+    renderAdminOrdersTab();
+
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    if (window.lucide) window.lucide.createIcons();
+  }
+
+  function closeAdminDashboard() {
+    const modal = document.getElementById('admin-modal');
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+  }
+
+  function switchAdminTab(tabName) {
+    document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+      btn.className = "admin-tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-all text-[#75655D] hover:text-[#5A2D1A]";
+    });
+    const activeBtn = document.getElementById(`admin-tab-${tabName}`);
+    if (activeBtn) activeBtn.className = "admin-tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-all bg-[#5A2D1A] text-white";
+
+    if (tabName === 'orders') renderAdminOrdersTab();
+    if (tabName === 'quotes') renderAdminQuotesTab();
+    if (tabName === 'events') renderAdminEventsTab();
+  }
+
+  function renderAdminOrdersTab() {
+    const body = document.getElementById('admin-tab-body');
+    if (!body) return;
+
+    let orders = [];
+    try {
+      orders = JSON.parse(localStorage.getItem('sri_lakshmi_admin_orders') || '[]');
+    } catch (e) {}
+
+    body.innerHTML = `
+      <div class="space-y-4">
+        <div class="flex justify-between items-center pb-2 border-b border-[#A94F20]/15">
+          <h4 class="font-serif text-xl font-bold text-[#5A2D1A]">Live Customer Orders (${orders.length})</h4>
+        </div>
+
+        ${orders.length === 0 ? '<p class="text-xs text-[#75655D]">No active orders right now.</p>' : `
+          <div class="space-y-3">
+            ${orders.map(o => `
+              <div class="p-4 bg-white rounded-2xl border border-[#A94F20]/20 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-xs">
+                <div>
+                  <div class="flex items-center gap-3">
+                    <span class="font-mono font-bold text-[#5A2D1A]">${o.id}</span>
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${o.status === 'Preparing' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}">${o.status}</span>
+                  </div>
+                  <p class="font-bold text-[#A94F20] mt-1">${o.customerName} (${o.phone})</p>
+                  <p class="text-[11px] text-[#75655D]">Pickup: ${o.pickupDate} @ ${o.pickupSlot} | ${o.paymentMethod}</p>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <button onclick="window.App.updateAdminOrderStatus('${o.id}', 'Preparing')" class="px-3 py-1.5 bg-amber-100 text-amber-800 rounded-lg font-bold hover:bg-amber-200">Preparing</button>
+                  <button onclick="window.App.updateAdminOrderStatus('${o.id}', 'Ready for Pickup')" class="px-3 py-1.5 bg-emerald-100 text-emerald-800 rounded-lg font-bold hover:bg-emerald-200">Ready</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `}
+      </div>
+    `;
+    if (window.lucide) window.lucide.createIcons();
+  }
+
+  function updateAdminOrderStatus(orderId, newStatus) {
+    try {
+      let orders = JSON.parse(localStorage.getItem('sri_lakshmi_admin_orders') || '[]');
+      const order = orders.find(o => o.id === orderId);
+      if (order) {
+        order.status = newStatus;
+        localStorage.setItem('sri_lakshmi_admin_orders', JSON.stringify(orders));
+        renderAdminOrdersTab();
+        showToast(`Order ${orderId} updated to ${newStatus}`);
+      }
+    } catch (e) {}
+  }
+
+  function renderAdminQuotesTab() {
+    const body = document.getElementById('admin-tab-body');
+    if (!body) return;
+
+    let reqs = [];
+    try {
+      reqs = JSON.parse(localStorage.getItem('sri_lakshmi_custom_requests') || '[]');
+    } catch (e) {}
+
+    body.innerHTML = `
+      <div class="space-y-4">
+        <div class="flex justify-between items-center pb-2 border-b border-[#A94F20]/15">
+          <h4 class="font-serif text-xl font-bold text-[#5A2D1A]">Custom Cake Quote Requests (${reqs.length})</h4>
+        </div>
+
+        ${reqs.length === 0 ? '<p class="text-xs text-[#75655D]">No custom cake requests pending.</p>' : `
+          <div class="space-y-4">
+            ${reqs.map(r => `
+              <div class="p-4 bg-white rounded-2xl border border-[#A94F20]/20 flex flex-col md:flex-row justify-between items-start gap-4 text-xs">
+                <div class="space-y-1">
+                  <div class="flex items-center gap-2">
+                    <span class="font-mono font-bold text-[#5A2D1A]">${r.id}</span>
+                    <span class="px-2 py-0.5 bg-amber-100 text-amber-800 rounded text-[10px] font-bold">${r.status}</span>
+                  </div>
+                  <h5 class="font-bold text-[#A94F20] text-sm">${r.cakeType} (${r.weight}, ${r.flavour})</h5>
+                  <p class="text-[#75655D]">Customer: ${r.customerName} (${r.phone}) | Date: ${r.pickupDate} ${r.pickupTime}</p>
+                  <p class="italic text-[#5A2D1A]">Message on cake: "${r.message}"</p>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <input type="number" id="quote-input-${r.id}" placeholder="Quote Price (₹)" class="w-32 bg-[#FFF9F2] border border-[#A94F20]/20 rounded-xl p-2 font-bold outline-none" />
+                  <button onclick="window.App.approveAdminQuote('${r.id}')" class="px-4 py-2 bg-[#5A2D1A] text-white rounded-xl font-bold hover:bg-[#A94F20]">Approve Quote</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `}
+      </div>
+    `;
+  }
+
+  function approveAdminQuote(reqId) {
+    const input = document.getElementById(`quote-input-${reqId}`);
+    if (!input || !input.value) {
+      alert('Please enter a quote price in ₹ first!');
+      return;
+    }
+
+    try {
+      let reqs = JSON.parse(localStorage.getItem('sri_lakshmi_custom_requests') || '[]');
+      const req = reqs.find(r => r.id === reqId);
+      if (req) {
+        req.status = `Approved — Quoted ₹${input.value}`;
+        req.quotedPrice = input.value;
+        localStorage.setItem('sri_lakshmi_custom_requests', JSON.stringify(reqs));
+        renderAdminQuotesTab();
+        showToast(`Quote for ${reqId} approved at ₹${input.value}`);
+      }
+    } catch (e) {}
+  }
+
+  function renderAdminEventsTab() {
+    const body = document.getElementById('admin-tab-body');
+    if (!body) return;
+
+    let evs = [];
+    try {
+      evs = JSON.parse(localStorage.getItem('sri_lakshmi_event_bookings') || '[]');
+    } catch (e) {}
+
+    body.innerHTML = `
+      <div class="space-y-4">
+        <div class="flex justify-between items-center pb-2 border-b border-[#A94F20]/15">
+          <h4 class="font-serif text-xl font-bold text-[#5A2D1A]">Event & Birthday Space Bookings (${evs.length})</h4>
+        </div>
+
+        ${evs.length === 0 ? '<p class="text-xs text-[#75655D]">No party bookings.</p>' : `
+          <div class="space-y-3">
+            ${evs.map(e => `
+              <div class="p-4 bg-white rounded-2xl border border-[#A94F20]/20 flex justify-between items-center text-xs">
+                <div>
+                  <span class="font-mono font-bold text-[#5A2D1A]">${e.id}</span>
+                  <h5 class="font-bold text-[#A94F20] text-sm">${e.occasion} — ${e.guests}</h5>
+                  <p class="text-[#75655D]">Name: ${e.customerName} (${e.phone}) | Date: ${e.date} (${e.slot})</p>
+                </div>
+                <span class="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full font-bold text-[10px]">${e.status}</span>
+              </div>
+            `).join('')}
+          </div>
+        `}
+      </div>
+    `;
   }
 
   function checkoutViaWhatsApp() {
@@ -600,23 +1077,40 @@ window.App = (function () {
     if (menu) menu.classList.toggle('hidden');
   }
 
+  function openEventModal() {
+    const elem = document.getElementById('custom-cake-section');
+    if (elem) elem.scrollIntoView({ behavior: 'smooth' });
+  }
+
   return {
     init,
     setCategory,
     handleSearch,
     openQuickView,
     closeQuickView,
+    updateCakeCustomization,
+    addCustomizedToCart,
     addToCart,
     updateQuantity,
     removeFromCart,
     openCartDrawer,
     closeCartDrawer,
+    applyCoupon,
+    updateCheckoutState,
     triggerOrderSuccess,
     closeOrderSuccess,
+    submitCustomCakeRequest,
+    submitEventBooking,
+    openAdminDashboard,
+    closeAdminDashboard,
+    switchAdminTab,
+    updateAdminOrderStatus,
+    approveAdminQuote,
     checkoutViaWhatsApp,
     openLightbox,
     closeLightbox,
-    toggleMobileMenu
+    toggleMobileMenu,
+    openEventModal
   };
 })();
 

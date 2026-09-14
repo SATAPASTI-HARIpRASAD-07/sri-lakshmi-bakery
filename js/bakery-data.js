@@ -1,12 +1,12 @@
 /**
- * SRI LAKSHMI BAKERY - Master Dataset (Updated with Indian Cakes, Cool Drinks & Dining Seating)
+ * SRI LAKSHMI BAKERY - Master Dataset (Updated with Extended Schema, Slots, Events & Admin Defaults)
  */
 
 window.BAKERY_DATA = {
   brand: {
     name: "SRI LAKSHMI BAKERY",
     tagline: "Freshly Baked Happiness Every Day",
-    supportingText: "Delicious cakes, breads, cookies, cool drinks and celebration spaces — made with love, served with a smile.",
+    supportingText: "Delicious cakes, breads, cookies, cool drinks, custom bakes & celebration spaces — made with love, served with a smile.",
     phone: "+1 (555) 987-6543",
     phoneClean: "15559876543",
     whatsappNumber: "15559876543",
@@ -16,6 +16,51 @@ window.BAKERY_DATA = {
     established: "2019",
     heroEyebrow: "FRESH • LOCAL • HANDCRAFTED"
   },
+
+  cakeCustomizer: {
+    weights: [
+      { id: "0.5kg", label: "0.5 kg", multiplier: 1, extraPrice: 0 },
+      { id: "1.0kg", label: "1.0 kg", multiplier: 1.8, extraPrice: 350 },
+      { id: "1.5kg", label: "1.5 kg", multiplier: 2.6, extraPrice: 700 },
+      { id: "2.0kg", label: "2.0 kg", multiplier: 3.4, extraPrice: 1050 }
+    ],
+    types: [
+      { id: "eggless", label: "Eggless (100% Pure Veg)", extraPrice: 30 },
+      { id: "with-egg", label: "With Egg (Traditional)", extraPrice: 0 }
+    ],
+    flavours: [
+      "Belgian Dark Chocolate",
+      "Royal Rasmalai Saffron",
+      "Butterscotch Praline",
+      "Fresh Alphonso Mango",
+      "Pineapple Delight",
+      "Red Velvet Cream Cheese",
+      "Madagascar Vanilla Bean"
+    ]
+  },
+
+  pickupSlots: [
+    { time: "10:00 AM", available: true },
+    { time: "11:00 AM", available: true },
+    { time: "12:00 PM", available: true },
+    { time: "01:00 PM", available: true },
+    { time: "02:00 PM", available: true },
+    { time: "03:00 PM", available: true },
+    { time: "04:00 PM", available: true },
+    { time: "05:00 PM", available: true },
+    { time: "06:00 PM", available: true },
+    { time: "07:00 PM", available: true },
+    { time: "08:00 PM", available: true }
+  ],
+
+  eventOccasions: [
+    "Birthday Party",
+    "Wedding Anniversary",
+    "Engagement Celebration",
+    "Baby Shower / Naming Ceremony",
+    "Corporate Event / Meeting",
+    "Family Gathering"
+  ],
 
   trustFeatures: [
     { id: "fresh", icon: "wheat", title: "FRESH INGREDIENTS", desc: "Made fresh every single morning." },
@@ -34,7 +79,6 @@ window.BAKERY_DATA = {
   ],
 
   products: [
-    // --- CAKES ---
     {
       id: "rasmalai-cake",
       name: "Royal Rasmalai Fusion Cake",
@@ -43,7 +87,8 @@ window.BAKERY_DATA = {
       fullDesc: "An authentic Indian celebration favorite! Fluffy eggless sponge soaked in aromatic saffron-cardamom milk, layered with soft rasmalai pieces, crushed pistachios, and edible rose petals.",
       price: "₹599",
       rawPrice: 599,
-      unit: "500g",
+      unit: "0.5 kg",
+      isCake: true,
       image: "https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=800&q=80",
       ingredients: ["Fresh Rasmalai", "Saffron Milk", "Cardamom Sponge", "Pistachio Curls", "Rose Petals"],
       bestseller: true,
@@ -58,7 +103,8 @@ window.BAKERY_DATA = {
       fullDesc: "Classic local favorite! Golden vanilla sponge smothered in creamy caramel butterscotch sauce, filled with crunchy praline bits and topped with chocolate crown decorations.",
       price: "₹450",
       rawPrice: 450,
-      unit: "500g",
+      unit: "0.5 kg",
+      isCake: true,
       image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=800&q=80",
       ingredients: ["Caramel Praline", "Butterscotch Sauce", "Vanilla Sponge", "Whipped Cream"],
       bestseller: true,
@@ -73,7 +119,8 @@ window.BAKERY_DATA = {
       fullDesc: "Refreshing & tropical! Soft vanilla cake filled with juicy pineapple chunks, sweet pineapple glaze, and topped with glace cherries and white chocolate flakes.",
       price: "₹420",
       rawPrice: 420,
-      unit: "500g",
+      unit: "0.5 kg",
+      isCake: true,
       image: "https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=800&q=80",
       ingredients: ["Fresh Pineapple Slices", "Vanilla Sponge", "Whipped Cream", "Glace Cherries"],
       bestseller: false,
@@ -88,15 +135,14 @@ window.BAKERY_DATA = {
       fullDesc: "Smooth, velvety, and luxurious! Heart-shaped red velvet sponge layered with authentic tangy cream cheese frosting and fine velvet crumbs.",
       price: "₹520",
       rawPrice: 520,
-      unit: "500g",
+      unit: "0.5 kg",
+      isCake: true,
       image: "https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?auto=format&fit=crop&w=800&q=80",
       ingredients: ["Red Cocoa Sponge", "Cream Cheese Frosting", "Vanilla Extract", "Butter"],
       bestseller: true,
       rating: 4.9,
       reviewsCount: 168
     },
-
-    // --- COOL DRINKS & BEVERAGES ---
     {
       id: "chilled-badam-milk",
       name: "Chilled Saffron Badam Milk",
@@ -106,6 +152,7 @@ window.BAKERY_DATA = {
       price: "₹60",
       rawPrice: 60,
       unit: "300ml Bottle",
+      isCake: false,
       image: "https://images.unsplash.com/photo-1556881286-fc6915169721?auto=format&fit=crop&w=800&q=80",
       ingredients: ["Pure Milk", "Roasted Almonds", "Kashmir Saffron", "Green Cardamom"],
       bestseller: true,
@@ -121,6 +168,7 @@ window.BAKERY_DATA = {
       price: "₹50",
       rawPrice: 50,
       unit: "300ml Bottle",
+      isCake: false,
       image: "https://images.unsplash.com/photo-1541658016709-82535e94bc69?auto=format&fit=crop&w=800&q=80",
       ingredients: ["Fresh Milk", "Organic Rose Syrup", "Sabja Seeds", "Ice"],
       bestseller: true,
@@ -136,6 +184,7 @@ window.BAKERY_DATA = {
       price: "₹90",
       rawPrice: 90,
       unit: "350ml Glass",
+      isCake: false,
       image: "https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&w=800&q=80",
       ingredients: ["Espresso Coffee", "Chilled Milk", "Vanilla Ice Cream", "Chocolate Sauce"],
       bestseller: true,
@@ -151,14 +200,13 @@ window.BAKERY_DATA = {
       price: "₹70",
       rawPrice: 70,
       unit: "300ml Glass",
+      isCake: false,
       image: "https://images.unsplash.com/photo-1546173159-315724a31696?auto=format&fit=crop&w=800&q=80",
       ingredients: ["Sweet Curd", "Alphonso Mango Pulp", "Pistachio Bits", "Cardamom"],
       bestseller: false,
       rating: 4.8,
       reviewsCount: 130
     },
-
-    // --- PASTRIES, BREADS, COOKIES, SNACKS ---
     {
       id: "black-forest-pastry",
       name: "Classic Black Forest Pastry",
@@ -168,6 +216,7 @@ window.BAKERY_DATA = {
       price: "₹99",
       rawPrice: 99,
       unit: "Per Piece",
+      isCake: false,
       image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=800&q=80",
       ingredients: ["Cocoa Sponge", "Whipped Cream", "Maraschino Cherries", "Chocolate Shavings"],
       bestseller: true,
@@ -183,6 +232,7 @@ window.BAKERY_DATA = {
       price: "₹200",
       rawPrice: 200,
       unit: "1 kg Pack",
+      isCake: false,
       image: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=800&q=80",
       ingredients: ["Pure Dairy Butter", "Cane Sugar", "Flour", "Vanilla Extract"],
       bestseller: true,
@@ -198,6 +248,7 @@ window.BAKERY_DATA = {
       price: "₹40",
       rawPrice: 40,
       unit: "400g Loaf",
+      isCake: false,
       image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80",
       ingredients: ["Stone-Ground Whole Wheat", "Honey", "Yeast", "Sea Salt"],
       bestseller: true,
@@ -213,6 +264,7 @@ window.BAKERY_DATA = {
       price: "₹80",
       rawPrice: 80,
       unit: "Pack of 8",
+      isCake: false,
       image: "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?auto=format&fit=crop&w=800&q=80",
       ingredients: ["Wheat Flour", "Roasted Garlic", "Italian Herbs", "Butter"],
       bestseller: false,
@@ -292,11 +344,69 @@ window.BAKERY_DATA = {
     { id: "g6", title: "Cold Coffee with Scoop", category: "Cool Drinks", image: "https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&w=800&q=80" }
   ],
 
-  specialOffer: {
-    title: "SWEET DEAL OF THE WEEK",
-    subtitle: "Get 10% OFF on all celebration cakes and cool drink combos!",
-    code: "FRESH10",
-    image: "https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=800&q=80",
-    discountBadge: "10% OFF"
+  // Initial Mock Admin Data
+  initialAdminData: {
+    orders: [
+      {
+        id: "SLB-94821",
+        customerName: "Suresh Varma",
+        phone: "+91 98765 12345",
+        items: [
+          { name: "Royal Rasmalai Fusion Cake (1.0 kg)", quantity: 1, price: 949 }
+        ],
+        total: 949,
+        status: "Preparing",
+        pickupDate: "2026-09-15",
+        pickupSlot: "05:00 PM",
+        paymentMethod: "UPI (Google Pay)",
+        createdAt: "2026-09-14 10:30 AM"
+      },
+      {
+        id: "SLB-94822",
+        customerName: "Ananya Rao",
+        phone: "+91 98765 67890",
+        items: [
+          { name: "Chilled Saffron Badam Milk", quantity: 4, price: 240 },
+          { name: "Royal Bakery Butter Cookies", quantity: 1, price: 200 }
+        ],
+        total: 440,
+        status: "Ready for Pickup",
+        pickupDate: "2026-09-14",
+        pickupSlot: "06:00 PM",
+        paymentMethod: "Pay on Pickup",
+        createdAt: "2026-09-14 02:15 PM"
+      }
+    ],
+    customRequests: [
+      {
+        id: "CR-104",
+        customerName: "Kavitha Sharma",
+        phone: "+91 99887 76655",
+        occasion: "1st Birthday Party",
+        cakeType: "3D Jungle Theme Fondant Cake",
+        flavour: "Belgian Dark Chocolate",
+        weight: "2.5 kg",
+        eggless: "Eggless",
+        pickupDate: "2026-09-20",
+        pickupTime: "04:00 PM",
+        message: "Happy 1st Birthday Aaryan!",
+        status: "Pending Quote",
+        quotedPrice: null,
+        referenceImg: "https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=400&q=80"
+      }
+    ],
+    eventBookings: [
+      {
+        id: "EV-201",
+        customerName: "Ramesh Babu",
+        phone: "+91 91234 56789",
+        occasion: "Birthday Party",
+        guests: "25 Guests",
+        seatingArea: "Cake Cutting & Birthday Zone",
+        date: "2026-09-18",
+        slot: "06:00 PM - 09:00 PM",
+        status: "Confirmed"
+      }
+    ]
   }
 };
