@@ -133,3 +133,29 @@ h1, h2, h3, .font-serif {
 .animate-float {
   animation: floatSlow 5s infinite ease-in-out;
 }
+
+/* STEPPER & TAB ACTIVE STATES */
+.active-tab {
+  background-color: var(--color-primary) !important;
+  color: #FFFFFF !important;
+  border-color: var(--color-primary) !important;
+}
+
+/* MOBILE FLOATING CTA BAR */
+.floating-support-btn {
+  box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4);
+}
+
+.floating-call-btn {
+  box-shadow: 0 10px 30px rgba(169, 79, 32, 0.4);
+}
+
+/* UTILITY CLASSES */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+

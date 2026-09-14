@@ -3,11 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sri Lakshmi Bakery | Online Cake Ordering, Pre-Orders & Custom Bakes</title>
-  <meta name="description" content="Order fresh cakes, custom celebration cakes, badam milk, cool drinks & pastries online from Sri Lakshmi Bakery in Srikakulam." />
+  <title>Sri Lakshmi Bakery | Online Cake & Bakery Ordering Platform</title>
+  <meta name="description" content="Order fresh cakes, custom celebration cakes, badam milk, cool drinks & pastries online from Sri Lakshmi Bakery in Visakhapatnam & Srikakulam." />
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- FontAwesome Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
   <!-- Three.js CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -46,8 +49,8 @@
       <!-- Desktop Nav Links -->
       <nav class="hidden md:flex items-center gap-7 text-xs font-bold uppercase tracking-wider text-[#241812]/80">
         <a href="#home" class="hover:text-[#A94F20] transition-colors py-1">HOME</a>
-        <a href="#products-section" class="hover:text-[#A94F20] transition-colors py-1">PRODUCTS</a>
-        <a href="#custom-cake-section" class="hover:text-[#A94F20] transition-colors py-1 text-[#A94F20] font-extrabold">CUSTOM CAKES</a>
+        <a href="#products-section" class="hover:text-[#A94F20] transition-colors py-1">PRODUCTS (60+)</a>
+        <a href="#tracking-section" class="hover:text-[#A94F20] transition-colors py-1 text-[#A94F20] font-extrabold">ORDER TRACKING</a>
         <a href="#seating-section" class="hover:text-[#A94F20] transition-colors py-1">DINING LOUNGE</a>
         <a href="#gallery" class="hover:text-[#A94F20] transition-colors py-1">GALLERY</a>
         <a href="#contact" class="hover:text-[#A94F20] transition-colors py-1">CONTACT</a>
@@ -65,10 +68,10 @@
           <span id="cart-badge" class="hidden absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#A94F20] text-white text-[10px] font-bold flex items-center justify-center">0</span>
         </button>
 
-        <a href="#products-section" class="btn-primary">
+        <button onclick="window.App.openCheckoutStepper()" class="btn-primary">
           <span>ORDER NOW</span>
           <i data-lucide="arrow-right" class="w-4 h-4"></i>
-        </a>
+        </button>
       </div>
 
       <!-- Mobile Controls -->
@@ -88,8 +91,8 @@
     <!-- Mobile Drawer Menu -->
     <div id="mobile-menu" class="hidden lg:hidden mt-3 bg-white/95 backdrop-blur-xl p-6 rounded-2xl border border-[#A94F20]/20 shadow-xl flex flex-col gap-4 text-center text-xs uppercase tracking-widest font-bold text-[#5A2D1A]">
       <a href="#home" onclick="window.App.toggleMobileMenu()" class="py-2 hover:text-[#A94F20]">HOME</a>
-      <a href="#products-section" onclick="window.App.toggleMobileMenu()" class="py-2 hover:text-[#A94F20]">PRODUCTS</a>
-      <a href="#custom-cake-section" onclick="window.App.toggleMobileMenu()" class="py-2 text-[#A94F20]">CUSTOM CAKES</a>
+      <a href="#products-section" onclick="window.App.toggleMobileMenu()" class="py-2 hover:text-[#A94F20]">PRODUCTS (60+)</a>
+      <a href="#tracking-section" onclick="window.App.toggleMobileMenu()" class="py-2 text-[#A94F20]">TRACK ORDER</a>
       <a href="#seating-section" onclick="window.App.toggleMobileMenu()" class="py-2 hover:text-[#A94F20]">DINING LOUNGE</a>
       <a href="#gallery" onclick="window.App.toggleMobileMenu()" class="py-2 hover:text-[#A94F20]">GALLERY</a>
       <a href="#contact" onclick="window.App.toggleMobileMenu()" class="py-2 hover:text-[#A94F20]">CONTACT</a>
@@ -97,7 +100,7 @@
         <i data-lucide="shield-check" class="w-4 h-4"></i>
         <span>Owner Admin Portal</span>
       </button>
-      <a href="#products-section" onclick="window.App.toggleMobileMenu()" class="btn-primary justify-center mt-2">ORDER NOW</a>
+      <button onclick="window.App.toggleMobileMenu(); window.App.openCheckoutStepper();" class="btn-primary justify-center mt-2">ORDER NOW</button>
     </div>
   </header>
 
@@ -109,7 +112,7 @@
       <div class="lg:col-span-6 space-y-6">
         <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#A94F20]/10 border border-[#A94F20]/25 text-[#A94F20] text-xs uppercase font-bold tracking-[0.25em]">
           <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-          <span>FRESH • LOCAL • HANDCRAFTED</span>
+          <span>FRESH • LOCAL • 60+ ITEMS</span>
         </div>
 
         <h1 class="font-serif text-5xl md:text-7xl font-extrabold text-[#5A2D1A] leading-[1.1] tracking-tight">
@@ -118,18 +121,19 @@
         </h1>
 
         <p class="text-base md:text-lg text-[#75655D] font-light leading-relaxed max-w-lg">
-          Delicious celebration cakes, custom bakes, badam milk, cool drinks & snacks — made with love, served with a smile.
+          Delicious cakes, breads, cookies, badam milk & cool drinks — made with love, served with a smile.
         </p>
 
         <!-- CTA Buttons -->
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
-          <a href="#products-section" class="btn-primary text-center justify-center">
+          <button onclick="window.App.openCheckoutStepper()" class="btn-primary text-center justify-center">
             <span>ORDER NOW</span>
             <i data-lucide="arrow-right" class="w-4 h-4"></i>
-          </a>
-          <a href="#custom-cake-section" class="px-8 py-3.5 rounded-full bg-white border border-[#A94F20]/30 text-[#5A2D1A] font-bold text-xs uppercase tracking-wider hover:bg-[#A94F20] hover:text-white transition-colors flex items-center justify-center gap-2 shadow-sm">
-            <i data-lucide="palette" class="w-4 h-4 text-[#D9823B]"></i>
-            <span>CUSTOM CAKE QUOTE</span>
+          </button>
+          <a href="https://wa.me/919668569974" target="_blank" rel="noopener noreferrer" 
+             class="btn-secondary text-center justify-center">
+            <i class="fab fa-whatsapp text-lg"></i>
+            <span>CHAT ON WHATSAPP (9668569974)</span>
           </a>
         </div>
 
@@ -174,19 +178,29 @@
     <div id="category-strip-container" class="flex gap-4 overflow-x-auto pb-4 scrollbar-none"></div>
   </section>
 
-  <!-- BESTSELLERS & PRODUCTS SECTION -->
+  <!-- PRODUCTS SECTION (60+ ITEMS WITH SEARCH & SORT) -->
   <section id="products-section" class="py-20 px-6 md:px-12 max-w-7xl mx-auto">
-    <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-6">
       <div>
-        <span class="text-xs font-bold uppercase tracking-[0.25em] text-[#A94F20] block mb-2">Customer Favorites</span>
-        <h2 class="font-serif text-4xl md:text-5xl font-extrabold text-[#5A2D1A]">Our Bestsellers</h2>
-        <p class="text-xs md:text-sm text-[#75655D] mt-1">Fresh celebration cakes, cool drinks, badam milk & pastries.</p>
+        <span class="text-xs font-bold uppercase tracking-[0.25em] text-[#A94F20] block mb-2">Expanded Catalog (60+ Items)</span>
+        <h2 class="font-serif text-4xl md:text-5xl font-extrabold text-[#5A2D1A]">Our Bakery Products</h2>
+        <p class="text-xs md:text-sm text-[#75655D] mt-1">Fresh celebration cakes, cool drinks, badam milk, breads & pastries.</p>
       </div>
 
-      <!-- Product Live Search Bar -->
-      <div class="w-full md:w-80 relative">
-        <input type="text" oninput="window.App.handleSearch(this.value)" placeholder="Search Rasmalai, Badam Milk, Pastry..." class="w-full bg-white border border-[#A94F20]/20 rounded-full px-5 py-3 text-xs text-[#241812] placeholder-[#75655D]/60 outline-none focus:border-[#D9823B] shadow-sm" />
-        <i data-lucide="search" class="w-4 h-4 text-[#A94F20] absolute right-4 top-3.5"></i>
+      <!-- Search & Sort Controls Bar -->
+      <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+        <!-- Live Search Input -->
+        <div class="relative flex-1 sm:w-72">
+          <input type="text" oninput="window.App.handleSearch(this.value)" placeholder="Search Rasmalai, Badam Milk, Pastry..." class="w-full bg-white border border-[#A94F20]/20 rounded-full px-5 py-3 text-xs text-[#241812] placeholder-[#75655D]/60 outline-none focus:border-[#D9823B] shadow-sm" />
+          <i data-lucide="search" class="w-4 h-4 text-[#A94F20] absolute right-4 top-3.5"></i>
+        </div>
+
+        <!-- Sort Select -->
+        <select onchange="window.App.handleSort(this.value)" class="bg-white border border-[#A94F20]/20 rounded-full px-4 py-3 text-xs text-[#5A2D1A] font-semibold outline-none focus:border-[#D9823B] shadow-sm">
+          <option value="popular">🔥 Most Popular</option>
+          <option value="price-low">Price: Low to High</option>
+          <option value="price-high">Price: High to Low</option>
+        </select>
       </div>
     </div>
 
@@ -194,133 +208,24 @@
     <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"></div>
   </section>
 
-  <!-- DEDICATED CUSTOM CAKE REQUEST SECTION -->
-  <section id="custom-cake-section" class="py-24 px-6 md:px-12 max-w-7xl mx-auto border-t border-[#A94F20]/15">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-      
-      <div class="lg:col-span-5 space-y-6">
-        <span class="text-xs font-bold uppercase tracking-[0.25em] text-[#A94F20]">BESPOKE BAKERY DESIGNS</span>
-        <h2 class="font-serif text-4xl md:text-5xl font-extrabold text-[#5A2D1A]">
-          Custom Cake Design Studio
-        </h2>
-        <p class="text-sm text-[#75655D] leading-relaxed">
-          Have a unique theme, multi-tier birthday cake, or custom design in mind? Fill in your specifications below and send reference specs directly to our master bakery owner for a personalized price quote.
-        </p>
+  <!-- LIVE ORDER TRACKING SECTION -->
+  <section id="tracking-section" class="py-20 px-6 md:px-12 max-w-7xl mx-auto border-t border-[#A94F20]/15">
+    <div class="text-center max-w-2xl mx-auto mb-10 space-y-2">
+      <span class="text-xs font-bold uppercase tracking-[0.25em] text-[#A94F20]">REAL-TIME ORDER STATUS</span>
+      <h2 class="font-serif text-4xl font-extrabold text-[#5A2D1A]">Track Your Bakery Order</h2>
+      <p class="text-xs md:text-sm text-[#75655D]">Check live baking, quality check, out for delivery & pickup progress.</p>
+    </div>
 
-        <div class="p-6 bg-white rounded-3xl border border-[#A94F20]/20 shadow-lg space-y-4 text-xs">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-2xl bg-[#5A2D1A] text-[#D9823B] flex items-center justify-center font-bold">
-              <i data-lucide="palette" class="w-5 h-5"></i>
-            </div>
-            <div>
-              <strong class="text-[#5A2D1A] block font-bold">Custom Themes Supported</strong>
-              <span class="text-[#75655D]">Jungle 3D, Cartoon, Floral, Wedding Tiers</span>
-            </div>
-          </div>
-
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-2xl bg-[#A94F20] text-white flex items-center justify-center font-bold">
-              <i data-lucide="clock" class="w-5 h-5"></i>
-            </div>
-            <div>
-              <strong class="text-[#5A2D1A] block font-bold">Quick Owner Review</strong>
-              <span class="text-[#75655D]">Direct approval & quote within 30 minutes</span>
-            </div>
-          </div>
+    <div id="tracking-container" class="max-w-4xl mx-auto">
+      <div class="text-center py-10 bg-white/80 rounded-3xl border border-[#A94F20]/20 p-8 shadow-sm">
+        <i class="fas fa-search-location text-5xl text-[#A94F20] mb-3 opacity-60"></i>
+        <h4 class="text-xl font-bold text-[#5A2D1A]">Enter Your Order ID to Track</h4>
+        <p class="text-[#75655D] text-xs mt-1 mb-6">Format: SLB-YYYYMMDD-XXXX (e.g. SLB-20260914-8921)</p>
+        <div class="flex max-w-md mx-auto gap-2">
+          <input type="text" id="manual-track-input" placeholder="SLB-20260914-8921" class="flex-1 px-4 py-2.5 rounded-xl border border-[#A94F20]/30 outline-none focus:border-[#D9823B] uppercase font-mono text-sm" />
+          <button onclick="SLBTracking.searchOrder()" class="btn-primary text-xs py-2.5">Track Order</button>
         </div>
       </div>
-
-      <!-- Custom Cake Form -->
-      <div class="lg:col-span-7 bg-white p-8 md:p-10 rounded-3xl border border-[#A94F20]/20 shadow-xl">
-        <h3 class="font-serif text-2xl font-bold text-[#5A2D1A] mb-6">Submit Custom Cake Quote Request</h3>
-
-        <form onsubmit="window.App.submitCustomCakeRequest(event)" class="space-y-4 text-xs font-sans">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block font-bold text-[#5A2D1A] mb-1">Your Full Name *</label>
-              <input type="text" name="customerName" required placeholder="Priya Sharma" class="w-full bg-[#FFF9F2] border border-[#A94F20]/20 rounded-xl p-3 outline-none focus:border-[#D9823B]" />
-            </div>
-            <div>
-              <label class="block font-bold text-[#5A2D1A] mb-1">Mobile Phone Number *</label>
-              <input type="tel" name="phone" required placeholder="+91 98765 00000" class="w-full bg-[#FFF9F2] border border-[#A94F20]/20 rounded-xl p-3 outline-none focus:border-[#D9823B]" />
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label class="block font-bold text-[#5A2D1A] mb-1">Occasion</label>
-              <select name="occasion" class="w-full bg-[#FFF9F2] border border-[#A94F20]/20 rounded-xl p-3 outline-none focus:border-[#D9823B]">
-                <option>Birthday Party</option>
-                <option>Wedding Anniversary</option>
-                <option>Engagement</option>
-                <option>Baby Shower</option>
-                <option>Corporate Celebration</option>
-              </select>
-            </div>
-            <div>
-              <label class="block font-bold text-[#5A2D1A] mb-1">Cake Style / Theme</label>
-              <input type="text" name="cakeType" placeholder="3D Fondant / Photo Cake" required class="w-full bg-[#FFF9F2] border border-[#A94F20]/20 rounded-xl p-3 outline-none focus:border-[#D9823B]" />
-            </div>
-            <div>
-              <label class="block font-bold text-[#5A2D1A] mb-1">Approx. Weight</label>
-              <select name="weight" class="w-full bg-[#FFF9F2] border border-[#A94F20]/20 rounded-xl p-3 outline-none focus:border-[#D9823B]">
-                <option>1.0 kg</option>
-                <option>1.5 kg</option>
-                <option>2.0 kg</option>
-                <option>3.0 kg (2-Tier)</option>
-                <option>5.0 kg+ (3-Tier)</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label class="block font-bold text-[#5A2D1A] mb-1">Flavour Preference</label>
-              <select name="flavour" class="w-full bg-[#FFF9F2] border border-[#A94F20]/20 rounded-xl p-3 outline-none focus:border-[#D9823B]">
-                <option>Belgian Dark Chocolate</option>
-                <option>Royal Rasmalai Saffron</option>
-                <option>Butterscotch Praline</option>
-                <option>Fresh Alphonso Mango</option>
-                <option>Red Velvet Cream Cheese</option>
-              </select>
-            </div>
-            <div>
-              <label class="block font-bold text-[#5A2D1A] mb-1">Type</label>
-              <select name="eggless" class="w-full bg-[#FFF9F2] border border-[#A94F20]/20 rounded-xl p-3 outline-none focus:border-[#D9823B]">
-                <option value="Eggless">🌱 100% Eggless</option>
-                <option value="With Egg">🥚 With Egg</option>
-              </select>
-            </div>
-            <div>
-              <label class="block font-bold text-[#5A2D1A] mb-1">Required Date</label>
-              <input type="date" name="pickupDate" required class="w-full bg-[#FFF9F2] border border-[#A94F20]/20 rounded-xl p-3 outline-none focus:border-[#D9823B]" />
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block font-bold text-[#5A2D1A] mb-1">Preferred Pickup Time</label>
-              <select name="pickupTime" class="w-full bg-[#FFF9F2] border border-[#A94F20]/20 rounded-xl p-3 outline-none focus:border-[#D9823B]">
-                <option>10:00 AM</option>
-                <option>12:00 PM</option>
-                <option>04:00 PM</option>
-                <option>06:00 PM</option>
-                <option>08:00 PM</option>
-              </select>
-            </div>
-            <div>
-              <label class="block font-bold text-[#5A2D1A] mb-1">Text Written on Cake</label>
-              <input type="text" name="cakeMessage" placeholder="e.g. Happy 5th Birthday Ananya!" class="w-full bg-[#FFF9F2] border border-[#A94F20]/20 rounded-xl p-3 outline-none focus:border-[#D9823B]" />
-            </div>
-          </div>
-
-          <button type="submit" class="btn-primary w-full justify-center text-xs uppercase tracking-widest mt-2">
-            <i data-lucide="send" class="w-4 h-4"></i>
-            <span>Submit Request for Owner Review</span>
-          </button>
-        </form>
-      </div>
-
     </div>
   </section>
 
@@ -416,7 +321,7 @@
             </div>
             <div>
               <strong class="text-[#5A2D1A] block font-bold text-sm">Address</strong>
-              <span>123 Main Road, Srikakulam, Andhra Pradesh — 532001</span>
+              <span>Main Road, Gajuwaka, Visakhapatnam & Srikakulam Main Road</span>
             </div>
           </div>
 
@@ -425,18 +330,18 @@
               <i data-lucide="phone" class="w-5 h-5"></i>
             </div>
             <div>
-              <strong class="text-[#5A2D1A] block font-bold text-sm">Phone</strong>
-              <span>+1 (555) 987-6543</span>
+              <strong class="text-[#5A2D1A] block font-bold text-sm">Phone / Order Support</strong>
+              <a href="tel:+919668569974" class="hover:text-[#A94F20] font-bold text-amber-900">+91 9668569974</a>
             </div>
           </div>
 
           <div class="flex items-start gap-4">
             <div class="w-10 h-10 rounded-2xl bg-[#A94F20]/10 text-[#A94F20] flex items-center justify-center flex-shrink-0">
-              <i data-lucide="mail" class="w-5 h-5"></i>
+              <i class="fab fa-whatsapp text-lg"></i>
             </div>
             <div>
-              <strong class="text-[#5A2D1A] block font-bold text-sm">Email</strong>
-              <span>srilakshmibakery@gmail.com</span>
+              <strong class="text-[#5A2D1A] block font-bold text-sm">WhatsApp Orders</strong>
+              <a href="https://wa.me/919668569974" target="_blank" class="hover:text-[#A94F20] font-bold text-emerald-700">Chat on 9668569974</a>
             </div>
           </div>
 
@@ -452,9 +357,9 @@
         </div>
 
         <div class="pt-4">
-          <a href="https://maps.google.com/?q=123+Main+Road+Srikakulam+Andhra+Pradesh" target="_blank" class="btn-primary">
-            <i data-lucide="navigation" class="w-4 h-4"></i>
-            <span>GET DIRECTIONS</span>
+          <a href="https://wa.me/919668569974" target="_blank" class="btn-primary">
+            <i class="fab fa-whatsapp text-lg"></i>
+            <span>CHAT ON WHATSAPP NOW</span>
           </a>
         </div>
       </div>
@@ -464,9 +369,9 @@
           <i data-lucide="map-pin" class="w-8 h-8"></i>
         </div>
         <h3 class="font-serif text-2xl font-bold text-[#5A2D1A]">SRI LAKSHMI BAKERY</h3>
-        <p class="text-xs text-[#75655D] max-w-xs">123 Main Road, Srikakulam, Andhra Pradesh — 532001</p>
-        <a href="https://maps.google.com/?q=123+Main+Road+Srikakulam+Andhra+Pradesh" target="_blank" class="px-6 py-3 bg-[#5A2D1A] text-white rounded-full text-xs font-bold uppercase tracking-wider hover:bg-[#A94F20] transition-colors">
-          Open in Google Maps
+        <p class="text-xs text-[#75655D] max-w-xs">Main Road, Gajuwaka, Visakhapatnam & Srikakulam</p>
+        <a href="https://wa.me/919668569974" target="_blank" class="px-6 py-3 bg-[#5A2D1A] text-white rounded-full text-xs font-bold uppercase tracking-wider hover:bg-[#A94F20] transition-colors">
+          Open Direct WhatsApp Chat
         </a>
       </div>
 
@@ -486,9 +391,9 @@
         </div>
         <p class="text-white/70 leading-relaxed">Delicious cakes, cool drinks, custom bakes & cookies — made with love, served with a smile.</p>
         <div class="flex gap-4 text-[#D9823B]">
+          <a href="https://wa.me/919668569974" target="_blank" class="hover:text-white"><i class="fab fa-whatsapp text-lg"></i></a>
           <a href="#" class="hover:text-white"><i data-lucide="facebook" class="w-4 h-4"></i></a>
           <a href="#" class="hover:text-white"><i data-lucide="instagram" class="w-4 h-4"></i></a>
-          <a href="#" class="hover:text-white"><i data-lucide="youtube" class="w-4 h-4"></i></a>
         </div>
       </div>
 
@@ -496,8 +401,8 @@
         <h4 class="font-bold uppercase tracking-widest text-[#D9823B] text-[11px]">QUICK LINKS</h4>
         <ul class="space-y-2 text-white/80">
           <li><a href="#home" class="hover:text-[#D9823B]">Home</a></li>
-          <li><a href="#products-section" class="hover:text-[#D9823B]">Products</a></li>
-          <li><a href="#custom-cake-section" class="hover:text-[#D9823B]">Custom Cakes</a></li>
+          <li><a href="#products-section" class="hover:text-[#D9823B]">Products (60+)</a></li>
+          <li><a href="#tracking-section" class="hover:text-[#D9823B]">Track Order</a></li>
           <li><a href="#seating-section" class="hover:text-[#D9823B]">Dining Lounge</a></li>
           <li><a href="#gallery" class="hover:text-[#D9823B]">Gallery</a></li>
           <li><a href="#contact" class="hover:text-[#D9823B]">Contact Us</a></li>
@@ -505,10 +410,10 @@
       </div>
 
       <div class="space-y-3">
-        <h4 class="font-bold uppercase tracking-widest text-[#D9823B] text-[11px]">CONTACT US</h4>
-        <p class="text-white/80">Phone: +1 (555) 987-6543</p>
-        <p class="text-white/80">Email: srilakshmibakery@gmail.com</p>
-        <p class="text-white/80">123 Main Road, Srikakulam, AP — 532001</p>
+        <h4 class="font-bold uppercase tracking-widest text-[#D9823B] text-[11px]">OFFICIAL CONTACT</h4>
+        <p class="text-white/80">Phone: <a href="tel:+919668569974" class="underline font-bold text-amber-200">+91 9668569974</a></p>
+        <p class="text-white/80">WhatsApp: <a href="https://wa.me/919668569974" target="_blank" class="underline font-bold text-emerald-300">9668569974</a></p>
+        <p class="text-white/80">Main Road, Gajuwaka, Visakhapatnam & Srikakulam</p>
       </div>
 
       <div class="space-y-3">
@@ -522,42 +427,250 @@
 
     <div class="max-w-7xl mx-auto mt-12 pt-6 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-white/50">
       <p>© 2026 Sri Lakshmi Bakery. All rights reserved.</p>
-      <p>Made with ❤️ for our customers.</p>
+      <p>Made with ❤️ for our valued customers.</p>
     </div>
   </footer>
 
-  <!-- FLOATING WHATSAPP BUTTON -->
-  <a href="https://wa.me/15559876543" target="_blank" title="Chat on WhatsApp" class="fixed bottom-6 right-6 z-50 group flex items-center gap-3 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-105 transition-all">
-    <i data-lucide="message-circle" class="w-6 h-6"></i>
-    <span class="hidden md:inline text-xs font-bold uppercase tracking-wider pr-1">Chat With Us</span>
-  </a>
+  <!-- FLOATING MOBILE SUPPORT BUTTONS (WHATSAPP & CALL) -->
+  <div class="fixed bottom-6 right-6 z-50 flex flex-col gap-3">
+    <a href="https://wa.me/919668569974" target="_blank" title="Chat on WhatsApp (9668569974)" 
+       class="floating-support-btn flex items-center gap-3 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-105 transition-all">
+      <i class="fab fa-whatsapp text-2xl"></i>
+      <span class="hidden md:inline text-xs font-bold uppercase tracking-wider pr-1">WhatsApp Order</span>
+    </a>
+    <a href="tel:+919668569974" title="Call Sri Lakshmi Bakery (9668569974)" 
+       class="floating-call-btn flex items-center gap-3 bg-[#5A2D1A] text-white p-4 rounded-full shadow-2xl hover:scale-105 transition-all">
+      <i class="fas fa-phone-alt text-lg"></i>
+      <span class="hidden md:inline text-xs font-bold uppercase tracking-wider pr-1">Call Bakery</span>
+    </a>
+  </div>
 
-  <!-- OWNER ADMIN DASHBOARD MODAL -->
-  <div id="admin-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/80 modal-backdrop">
-    <div class="relative w-full max-w-4xl bg-[#FFF9F2] border border-[#A94F20]/30 rounded-3xl p-6 md:p-8 shadow-2xl max-h-[90vh] overflow-y-auto">
-      <button onclick="window.App.closeAdminDashboard()" class="absolute top-6 right-6 text-[#75655D] hover:text-[#5A2D1A]">
+  <!-- MULTI-STEP CHECKOUT STEPPER MODAL (6 STEPS) -->
+  <div id="checkout-stepper-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/75 modal-backdrop">
+    <div class="relative w-full max-w-3xl bg-[#FFF9F2] border border-[#A94F20]/30 rounded-3xl p-6 md:p-8 shadow-2xl max-h-[90vh] overflow-y-auto">
+      <button onclick="window.App.closeCheckoutStepper()" class="absolute top-6 right-6 text-[#75655D] hover:text-[#5A2D1A]">
         <i data-lucide="x" class="w-6 h-6"></i>
       </button>
 
-      <div class="flex items-center gap-3 mb-6 pb-4 border-b border-[#A94F20]/20">
-        <div class="w-10 h-10 rounded-2xl bg-[#5A2D1A] text-[#D9823B] flex items-center justify-center font-bold">
-          <i data-lucide="shield-check" class="w-5 h-5"></i>
-        </div>
-        <div>
-          <h3 class="font-serif text-2xl font-bold text-[#5A2D1A]">Owner Admin Dashboard</h3>
-          <p class="text-xs text-[#75655D]">Manage live customer orders, custom cake quote requests & party bookings</p>
+      <!-- Stepper Header Progress Bar -->
+      <div class="mb-8 border-b border-[#A94F20]/15 pb-6">
+        <div class="flex items-center justify-between max-w-xl mx-auto relative">
+          <!-- Step 1 -->
+          <div class="flex flex-col items-center gap-1 z-10">
+            <div id="stepper-dot-1" class="w-8 h-8 rounded-full flex items-center justify-center font-bold bg-amber-600 text-white shadow-md ring-4 ring-amber-100">1</div>
+            <span id="stepper-label-1" class="text-xs font-bold text-amber-900 hidden md:block">Cart</span>
+          </div>
+          <!-- Line 1-2 -->
+          <div class="flex-1 h-0.5 bg-amber-200 -mx-2"></div>
+
+          <!-- Step 2 -->
+          <div class="flex flex-col items-center gap-1 z-10">
+            <div id="stepper-dot-2" class="w-8 h-8 rounded-full flex items-center justify-center font-bold bg-amber-100 text-amber-800">2</div>
+            <span id="stepper-label-2" class="text-xs font-medium text-stone-400 hidden md:block">Customer</span>
+          </div>
+          <!-- Line 2-3 -->
+          <div class="flex-1 h-0.5 bg-amber-200 -mx-2"></div>
+
+          <!-- Step 3 -->
+          <div class="flex flex-col items-center gap-1 z-10">
+            <div id="stepper-dot-3" class="w-8 h-8 rounded-full flex items-center justify-center font-bold bg-amber-100 text-amber-800">3</div>
+            <span id="stepper-label-3" class="text-xs font-medium text-stone-400 hidden md:block">Fulfillment</span>
+          </div>
+          <!-- Line 3-4 -->
+          <div class="flex-1 h-0.5 bg-amber-200 -mx-2"></div>
+
+          <!-- Step 4 -->
+          <div class="flex flex-col items-center gap-1 z-10">
+            <div id="stepper-dot-4" class="w-8 h-8 rounded-full flex items-center justify-center font-bold bg-amber-100 text-amber-800">4</div>
+            <span id="stepper-label-4" class="text-xs font-medium text-stone-400 hidden md:block">Payment</span>
+          </div>
+          <!-- Line 4-5 -->
+          <div class="flex-1 h-0.5 bg-amber-200 -mx-2"></div>
+
+          <!-- Step 5 -->
+          <div class="flex flex-col items-center gap-1 z-10">
+            <div id="stepper-dot-5" class="w-8 h-8 rounded-full flex items-center justify-center font-bold bg-amber-100 text-amber-800">5</div>
+            <span id="stepper-label-5" class="text-xs font-medium text-stone-400 hidden md:block">Receipt</span>
+          </div>
+          <!-- Line 5-6 -->
+          <div class="flex-1 h-0.5 bg-amber-200 -mx-2"></div>
+
+          <!-- Step 6 -->
+          <div class="flex flex-col items-center gap-1 z-10">
+            <div id="stepper-dot-6" class="w-8 h-8 rounded-full flex items-center justify-center font-bold bg-amber-100 text-amber-800">6</div>
+            <span id="stepper-label-6" class="text-xs font-medium text-stone-400 hidden md:block">Tracking</span>
+          </div>
         </div>
       </div>
 
-      <!-- Admin Tab Selector -->
-      <div class="flex gap-2 mb-6 border-b border-[#A94F20]/15 pb-3">
-        <button id="admin-tab-orders" onclick="window.App.switchAdminTab('orders')" class="admin-tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-[#5A2D1A] text-white">Live Orders</button>
-        <button id="admin-tab-quotes" onclick="window.App.switchAdminTab('quotes')" class="admin-tab-btn px-4 py-2 rounded-xl text-xs font-bold text-[#75655D] hover:text-[#5A2D1A]">Custom Cake Quotes</button>
-        <button id="admin-tab-events" onclick="window.App.switchAdminTab('events')" class="admin-tab-btn px-4 py-2 rounded-xl text-xs font-bold text-[#75655D] hover:text-[#5A2D1A]">Event Bookings</button>
+      <!-- STEP 1 PANEL: CART REVIEW -->
+      <div id="checkout-step-panel-1" class="space-y-6">
+        <h3 class="font-serif text-2xl font-bold text-[#5A2D1A]">Step 1: Review Your Cart</h3>
+        <div id="checkout-step-1-error" class="hidden p-3 bg-rose-100 text-rose-800 rounded-xl text-xs font-semibold"></div>
+        
+        <div class="bg-white rounded-2xl border border-[#A94F20]/20 p-4 space-y-3">
+          <p class="text-xs text-[#75655D]">Review selected bakery items before entering customer details.</p>
+          <button onclick="window.App.openCartDrawer()" class="text-xs font-bold text-[#A94F20] hover:underline flex items-center gap-1">
+            <i class="fas fa-pencil-alt me-1"></i> Edit Cart Drawer Items
+          </button>
+        </div>
+
+        <div class="flex justify-end pt-4">
+          <button onclick="SLBCheckout.nextStep()" class="btn-primary">
+            <span>Continue to Customer Details</span>
+            <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
       </div>
 
-      <!-- Tab Content Area -->
-      <div id="admin-tab-body" class="min-h-[300px]"></div>
+      <!-- STEP 2 PANEL: CUSTOMER DETAILS -->
+      <div id="checkout-step-panel-2" class="hidden space-y-6">
+        <h3 class="font-serif text-2xl font-bold text-[#5A2D1A]">Step 2: Customer Contact Information</h3>
+        <div id="checkout-step-2-error" class="hidden p-3 bg-rose-100 text-rose-800 rounded-xl text-xs font-semibold"></div>
+
+        <div class="bg-white rounded-2xl border border-[#A94F20]/20 p-6 space-y-4 text-xs">
+          <div>
+            <label class="block font-bold text-[#5A2D1A] mb-1">Full Name *</label>
+            <input type="text" id="input-cust-name" placeholder="e.g. Ramesh Kumar" class="w-full bg-[#FFF9F2] border border-[#A94F20]/20 rounded-xl p-3 outline-none focus:border-[#D9823B] font-medium" />
+          </div>
+
+          <div>
+            <label class="block font-bold text-[#5A2D1A] mb-1">Mobile Phone Number (10 Digits) *</label>
+            <input type="tel" id="input-cust-mobile" maxlength="10" placeholder="e.g. 9876543210" class="w-full bg-[#FFF9F2] border border-[#A94F20]/20 rounded-xl p-3 outline-none focus:border-[#D9823B] font-mono text-sm" />
+            <span class="text-[11px] text-[#75655D] mt-1 block">Used for delivery confirmation and order status updates.</span>
+          </div>
+
+          <div>
+            <label class="block font-bold text-[#5A2D1A] mb-1">Email Address (Optional)</label>
+            <input type="email" id="input-cust-email" placeholder="ramesh@gmail.com" class="w-full bg-[#FFF9F2] border border-[#A94F20]/20 rounded-xl p-3 outline-none focus:border-[#D9823B]" />
+          </div>
+        </div>
+
+        <div class="flex justify-between pt-4">
+          <button onclick="SLBCheckout.prevStep()" class="px-6 py-3 bg-stone-200 text-stone-800 font-bold rounded-full text-xs">Back</button>
+          <button onclick="SLBCheckout.nextStep()" class="btn-primary">
+            <span>Continue to Delivery / Pickup</span>
+            <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 3 PANEL: FULFILLMENT (DELIVERY / PICKUP) -->
+      <div id="checkout-step-panel-3" class="hidden space-y-6">
+        <h3 class="font-serif text-2xl font-bold text-[#5A2D1A]">Step 3: Select Fulfillment Option</h3>
+        <div id="checkout-step-3-error" class="hidden p-3 bg-rose-100 text-rose-800 rounded-xl text-xs font-semibold"></div>
+
+        <!-- Fulfillment Tabs -->
+        <div class="grid grid-cols-2 gap-3">
+          <button id="tab-delivery-btn" onclick="SLBCheckout.setFulfillmentType('delivery')" class="py-3 px-4 rounded-2xl font-bold text-xs border border-amber-600 bg-amber-600 text-white flex items-center justify-center gap-2 shadow-sm">
+            <i class="fas fa-truck"></i> Home Delivery (₹50 Fee)
+          </button>
+          <button id="tab-pickup-btn" onclick="SLBCheckout.setFulfillmentType('pickup')" class="py-3 px-4 rounded-2xl font-bold text-xs border border-amber-200 bg-white text-amber-950 flex items-center justify-center gap-2 hover:border-amber-400">
+            <i class="fas fa-store"></i> Store Pickup (FREE)
+          </button>
+        </div>
+
+        <!-- Delivery Address Fields -->
+        <div id="delivery-fields-container" class="bg-white rounded-2xl border border-[#A94F20]/20 p-6 space-y-4 text-xs">
+          <h4 class="font-bold text-[#5A2D1A] text-sm flex items-center gap-2"><i class="fas fa-map-marker-alt text-[#A94F20]"></i> Delivery Address Details</h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block font-bold text-[#5A2D1A] mb-1">Flat / House / Door No. *</label>
+              <input type="text" id="input-del-house" placeholder="Door No 12-3-4" class="w-full bg-[#FFF9F2] border border-[#A94F20]/20 rounded-xl p-3 outline-none focus:border-[#D9823B]" />
+            </div>
+            <div>
+              <label class="block font-bold text-[#5A2D1A] mb-1">Street / Apartment Name *</label>
+              <input type="text" id="input-del-street" placeholder="Gandhi Nagar Main Street" class="w-full bg-[#FFF9F2] border border-[#A94F20]/20 rounded-xl p-3 outline-none focus:border-[#D9823B]" />
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block font-bold text-[#5A2D1A] mb-1">Locality / Area *</label>
+              <input type="text" id="input-del-area" placeholder="Gajuwaka" class="w-full bg-[#FFF9F2] border border-[#A94F20]/20 rounded-xl p-3 outline-none focus:border-[#D9823B]" />
+            </div>
+            <div>
+              <label class="block font-bold text-[#5A2D1A] mb-1">City *</label>
+              <input type="text" id="input-del-city" value="Visakhapatnam" class="w-full bg-[#FFF9F2] border border-[#A94F20]/20 rounded-xl p-3 outline-none focus:border-[#D9823B]" />
+            </div>
+            <div>
+              <label class="block font-bold text-[#5A2D1A] mb-1">6-Digit PIN Code *</label>
+              <input type="text" id="input-del-pincode" maxlength="6" placeholder="530026" class="w-full bg-[#FFF9F2] border border-[#A94F20]/20 rounded-xl p-3 outline-none focus:border-[#D9823B] font-mono" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Store Pickup Fields -->
+        <div id="pickup-fields-container" class="hidden bg-white rounded-2xl border border-[#A94F20]/20 p-6 space-y-4 text-xs">
+          <h4 class="font-bold text-emerald-950 text-sm flex items-center gap-2"><i class="fas fa-store text-emerald-600"></i> Store Pickup Selection</h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block font-bold text-[#5A2D1A] mb-1">Pickup Date *</label>
+              <input type="date" id="input-pickup-date" class="w-full bg-[#FFF9F2] border border-[#A94F20]/20 rounded-xl p-3 outline-none focus:border-[#D9823B]" />
+            </div>
+            <div>
+              <label class="block font-bold text-[#5A2D1A] mb-1">Preferred Time Slot *</label>
+              <select id="input-pickup-time" class="w-full bg-[#FFF9F2] border border-[#A94F20]/20 rounded-xl p-3 outline-none focus:border-[#D9823B]">
+                <option>10:00 AM - 12:00 PM</option>
+                <option>12:00 PM - 02:00 PM</option>
+                <option>04:00 PM - 06:00 PM</option>
+                <option>06:00 PM - 08:00 PM</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Preview Card -->
+        <div id="fulfillment-preview-card"></div>
+
+        <div class="flex justify-between pt-4">
+          <button onclick="SLBCheckout.prevStep()" class="px-6 py-3 bg-stone-200 text-stone-800 font-bold rounded-full text-xs">Back</button>
+          <button onclick="SLBCheckout.nextStep()" class="btn-primary">
+            <span>Continue to Payment</span>
+            <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 4 PANEL: PAYMENT + PAYMENT WELCOME CARD -->
+      <div id="checkout-step-panel-4" class="hidden space-y-6">
+        <h3 class="font-serif text-2xl font-bold text-[#5A2D1A]">Step 4: Payment Selection</h3>
+        <div id="checkout-step-4-error" class="hidden p-3 bg-rose-100 text-rose-800 rounded-xl text-xs font-semibold"></div>
+
+        <!-- Payment Welcome Card Container -->
+        <div id="payment-welcome-container"></div>
+
+        <!-- Payment Methods -->
+        <div class="bg-white rounded-2xl border border-[#A94F20]/20 p-6 space-y-3 text-xs">
+          <h4 class="font-bold text-[#5A2D1A] text-sm mb-3">Choose Payment Method</h4>
+          <label class="flex items-center gap-3 p-3 rounded-xl border border-amber-200 cursor-pointer hover:bg-amber-50">
+            <input type="radio" name="payment_method" value="upi" checked class="text-amber-600 focus:ring-amber-500" />
+            <span class="font-bold text-amber-950 flex items-center gap-2"><i class="fas fa-qrcode text-amber-600"></i> Google Pay / PhonePe / PayTM / BHIM UPI</span>
+          </label>
+          <label class="flex items-center gap-3 p-3 rounded-xl border border-amber-200 cursor-pointer hover:bg-amber-50">
+            <input type="radio" name="payment_method" value="cod" class="text-amber-600 focus:ring-amber-500" />
+            <span class="font-bold text-amber-950 flex items-center gap-2"><i class="fas fa-hand-holding-dollar text-emerald-600"></i> Cash on Delivery / Pay at Store Counter</span>
+          </label>
+        </div>
+
+        <div class="flex justify-between pt-4">
+          <button onclick="SLBCheckout.prevStep()" class="px-6 py-3 bg-stone-200 text-stone-800 font-bold rounded-full text-xs">Back</button>
+          <button onclick="SLBCheckout.nextStep()" class="btn-primary">
+            <span>Confirm & Complete Order</span>
+            <i class="fas fa-check-circle"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 5 PANEL: CONFIRMATION RECEIPT & WHATSAPP TRIGGER -->
+      <div id="checkout-step-panel-5" class="hidden space-y-6">
+        <div id="confirmation-summary-container"></div>
+      </div>
+
+      <!-- STEP 6 PANEL: LIVE TRACKING TIMELINE -->
+      <div id="checkout-step-panel-6" class="hidden space-y-6">
+        <div id="tracking-container-checkout"></div>
+      </div>
+
     </div>
   </div>
 
@@ -594,26 +707,17 @@
           </div>
         </div>
 
-        <button onclick="window.App.triggerOrderSuccess()" class="btn-primary w-full justify-center text-xs uppercase tracking-widest">
+        <button onclick="window.App.openCheckoutStepper()" class="btn-primary w-full justify-center text-xs uppercase tracking-widest">
           <i data-lucide="check-circle" class="w-4 h-4"></i>
           <span>PROCEED TO PLACE ORDER</span>
         </button>
 
-        <button onclick="window.App.checkoutViaWhatsApp()" class="btn-secondary w-full justify-center text-xs uppercase tracking-widest">
-          <i data-lucide="message-circle" class="w-4 h-4"></i>
-          <span>ORDER VIA WHATSAPP</span>
-        </button>
+        <a href="https://wa.me/919668569974" target="_blank" rel="noopener noreferrer" 
+           class="btn-secondary w-full justify-center text-xs uppercase tracking-widest">
+          <i class="fab fa-whatsapp text-lg me-1"></i>
+          <span>ORDER VIA WHATSAPP (9668569974)</span>
+        </a>
       </div>
-    </div>
-  </div>
-
-  <!-- ORDER SUCCESSFUL CONFIRMATION MODAL -->
-  <div id="order-success-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/75 modal-backdrop">
-    <div class="relative w-full max-w-lg bg-white border border-[#A94F20]/20 rounded-3xl p-6 md:p-8 shadow-2xl">
-      <button onclick="window.App.closeOrderSuccess()" class="absolute top-4 right-4 p-2 text-[#75655D] hover:text-[#5A2D1A]">
-        <i data-lucide="x" class="w-6 h-6"></i>
-      </button>
-      <div id="order-success-content"></div>
     </div>
   </div>
 
@@ -627,21 +731,37 @@
     </div>
   </div>
 
-  <!-- LIGHTBOX MODAL -->
-  <div id="lightbox-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/90 modal-backdrop">
-    <div class="relative max-w-4xl w-full text-center">
-      <button onclick="window.App.closeLightbox()" class="absolute -top-12 right-0 p-2 text-white hover:text-[#D9823B]">
-        <i data-lucide="x" class="w-8 h-8"></i>
+  <!-- OWNER ADMIN DASHBOARD MODAL -->
+  <div id="admin-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/80 modal-backdrop">
+    <div class="relative w-full max-w-4xl bg-[#FFF9F2] border border-[#A94F20]/30 rounded-3xl p-6 md:p-8 shadow-2xl max-h-[90vh] overflow-y-auto">
+      <button onclick="window.App.closeAdminDashboard()" class="absolute top-6 right-6 text-[#75655D] hover:text-[#5A2D1A]">
+        <i data-lucide="x" class="w-6 h-6"></i>
       </button>
-      <img id="lightbox-img" src="" alt="" class="max-h-[80vh] mx-auto rounded-2xl border-2 border-white/20 shadow-2xl object-contain" />
-      <p id="lightbox-caption" class="text-white font-serif text-lg font-bold mt-4"></p>
+
+      <div class="flex items-center gap-3 mb-6 pb-4 border-b border-[#A94F20]/20">
+        <div class="w-10 h-10 rounded-2xl bg-[#5A2D1A] text-[#D9823B] flex items-center justify-center font-bold">
+          <i data-lucide="shield-check" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h3 class="font-serif text-2xl font-bold text-[#5A2D1A]">Owner Admin Dashboard</h3>
+          <p class="text-xs text-[#75655D]">Manage live customer orders, custom cake quote requests & party bookings</p>
+        </div>
+      </div>
+
+      <!-- Tab Content Area -->
+      <div id="admin-tab-body" class="min-h-[300px]"></div>
     </div>
   </div>
 
-  <!-- TOAST NOTIFICATION -->
-  <div id="toast-notification" class="fixed bottom-6 left-6 z-50 px-6 py-3 bg-[#5A2D1A] text-white font-bold text-xs rounded-xl shadow-2xl opacity-0 translate-y-4 transition-all duration-300 pointer-events-none"></div>
-
-  <!-- Application Scripts -->
+  <!-- Modular Application Scripts -->
+  <script src="js/whatsapp.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/orders.js"></script>
+  <script src="js/payment.js"></script>
+  <script src="js/checkout.js"></script>
+  <script src="js/tracking.js"></script>
+  <script src="js/notifications.js"></script>
   <script src="js/bakery-data.js"></script>
   <script src="js/bakery-3d.js"></script>
   <script src="js/app.js"></script>
