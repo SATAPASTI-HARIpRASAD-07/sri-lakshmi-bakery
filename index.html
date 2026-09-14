@@ -182,21 +182,26 @@
   <section id="products-section" class="py-20 px-6 md:px-12 max-w-7xl mx-auto">
     <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-6">
       <div>
-        <span class="text-xs font-bold uppercase tracking-[0.25em] text-[#A94F20] block mb-2">Expanded Catalog (60+ Items)</span>
+        <div class="flex items-center gap-3 mb-2">
+          <span class="text-xs font-bold uppercase tracking-[0.25em] text-[#A94F20]">Expanded Catalog (60+ Items)</span>
+          <span id="product-result-count" class="bg-amber-100 text-amber-900 font-extrabold text-[11px] px-3 py-0.5 rounded-full border border-amber-300">60 products found</span>
+        </div>
         <h2 class="font-serif text-4xl md:text-5xl font-extrabold text-[#5A2D1A]">Our Bakery Products</h2>
         <p class="text-xs md:text-sm text-[#75655D] mt-1">Fresh celebration cakes, cool drinks, badam milk, breads & pastries.</p>
       </div>
 
       <!-- Search & Sort Controls Bar -->
       <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-        <!-- Live Search Input -->
-        <div class="relative flex-1 sm:w-72">
-          <input type="text" oninput="window.App.handleSearch(this.value)" placeholder="Search Rasmalai, Badam Milk, Pastry..." class="w-full bg-white border border-[#A94F20]/20 rounded-full px-5 py-3 text-xs text-[#241812] placeholder-[#75655D]/60 outline-none focus:border-[#D9823B] shadow-sm" />
-          <i data-lucide="search" class="w-4 h-4 text-[#A94F20] absolute right-4 top-3.5"></i>
+        <!-- Live Search Input with Clear Button -->
+        <div class="relative flex-1 sm:w-80">
+          <input type="text" id="product-search-input" oninput="window.App.handleSearch(this.value)" aria-label="Search bakery products" placeholder="Search Rasmalai, Badam Milk, Pastry, Coca-Cola..." class="w-full bg-white border border-[#A94F20]/20 rounded-full pl-5 pr-10 py-3 text-xs text-[#241812] placeholder-[#75655D]/60 outline-none focus:border-[#D9823B] shadow-sm" />
+          <button id="clear-search-btn" onclick="window.App.clearSearch()" aria-label="Clear search" class="hidden absolute right-3 top-3 w-6 h-6 rounded-full bg-stone-200 hover:bg-stone-300 text-stone-700 text-xs font-bold flex items-center justify-center transition-all">
+            ✕
+          </button>
         </div>
 
         <!-- Sort Select -->
-        <select onchange="window.App.handleSort(this.value)" class="bg-white border border-[#A94F20]/20 rounded-full px-4 py-3 text-xs text-[#5A2D1A] font-semibold outline-none focus:border-[#D9823B] shadow-sm">
+        <select id="product-sort-select" onchange="window.App.handleSort(this.value)" aria-label="Sort products" class="bg-white border border-[#A94F20]/20 rounded-full px-4 py-3 text-xs text-[#5A2D1A] font-semibold outline-none focus:border-[#D9823B] shadow-sm">
           <option value="popular">🔥 Most Popular</option>
           <option value="price-low">Price: Low to High</option>
           <option value="price-high">Price: High to Low</option>

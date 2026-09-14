@@ -1,7 +1,7 @@
 /**
  * SRI LAKSHMI BAKERY - Master Application Logic
- * Integrates 60+ Products, 6-Step Checkout Stepper, Order Tracking, Payment Welcome Card,
- * Cake Customization, Admin Dashboard, and Three.js 3D WebGL hero scene.
+ * Product Search, Category Filter, Sorting Engine, 6-Step Checkout Stepper,
+ * Real-Time Order Tracking, Payment Welcome Card, Cake Customizer, Admin Dashboard.
  */
 
 window.App = (function () {
@@ -9,7 +9,6 @@ window.App = (function () {
   let searchQuery = '';
   let selectedSort = 'popular';
 
-  // Customization state for currently viewed cake
   let currentCustomization = {
     weight: '0.5kg',
     type: 'eggless',
@@ -25,7 +24,10 @@ window.App = (function () {
     initPreloader();
     initStickyNav();
 
-    // Initialize Modules
+    // Check URL Query Parameters for deep linking (e.g. ?category=cakes&search=chocolate)
+    parseUrlQueryParams();
+
+    // Initialize Checkout Stepper
     if (window.SLBCheckout) window.SLBCheckout.init();
 
     renderCategories();
@@ -45,6 +47,24 @@ window.App = (function () {
     }
 
     if (window.lucide) window.lucide.createIcons();
+  }
+
+  function parseUrlQueryParams() {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const catParam = params.get('category');
+      const searchParam = params.get('search');
+      const sortParam = params.get('sort');
+
+      if (catParam) selectedCategory = catParam.toLowerCase();
+      if (searchParam) searchQuery = searchParam;
+      if (sortParam) selectedSort = sortParam;
+
+      const searchInput = document.getElementById('product-search-input');
+      if (searchInput && searchQuery) {
+        searchInput.value = searchQuery;
+      }
+    } catch (e) {}
   }
 
   function initPreloader() {
@@ -79,9 +99,10 @@ window.App = (function () {
     if (!strip) return;
 
     const categories = [
-      { id: 'all', name: 'All Delicious Items', icon: 'cookie', subtitle: '60+ items' },
+      { id: 'all', name: 'All Items', icon: 'cookie', subtitle: '60+ items' },
       { id: 'cakes', name: 'Celebration Cakes', icon: 'cake', subtitle: '20+ Fresh Cakes' },
       { id: 'bakery', name: 'Bakery & Snacks', icon: 'sandwich', subtitle: 'Fresh Breads & Snacks' },
+      { id: 'pastries', name: 'Pastries & Desserts', icon: 'sparkles', subtitle: 'Brownies & Donuts' },
       { id: 'drinks', name: 'Cool Drinks & Milk', icon: 'cup-soda', subtitle: 'Badam Milk & Drinks' }
     ];
 
@@ -113,7 +134,43 @@ window.App = (function () {
   }
 
   function handleSearch(query) {
-    searchQuery = query;
+    searchQuery = query || '';
+    
+    // Toggle Clear Search [X] Button Visibility
+    const clearBtn = document.getElementById('clear-search-btn');
+    if (clearBtn) {
+      if (searchQuery.trim().length > 0) {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+      }
+    }
+
+    renderProducts();
+  }
+
+  function clearSearch() {
+    searchQuery = '';
+    const input = document.getElementById('product-search-input');
+    if (input) input.value = '';
+
+    const clearBtn = document.getElementById('clear-search-btn');
+    if (clearBtn) clearBtn.classList.add('hidden');
+
+    renderProducts();
+  }
+
+  function clearAllFilters() {
+    searchQuery = '';
+    selectedCategory = 'all';
+    
+    const input = document.getElementById('product-search-input');
+    if (input) input.value = '';
+
+    const clearBtn = document.getElementById('clear-search-btn');
+    if (clearBtn) clearBtn.classList.add('hidden');
+
+    renderCategories();
     renderProducts();
   }
 
@@ -123,28 +180,50 @@ window.App = (function () {
   }
 
   /**
-   * Render Product Cards Grid (Using SLBProducts Dataset)
+   * Render Products Grid with Search & Category Combination Filter
    */
   function renderProducts() {
     const grid = document.getElementById('products-grid');
+    const countEl = document.getElementById('product-result-count');
     if (!grid) return;
 
     let items = [];
     if (window.SLBProducts) {
       items = window.SLBProducts.getFilteredProducts(selectedCategory, searchQuery, selectedSort);
-    } else if (window.BAKERY_DATA) {
-      items = window.BAKERY_DATA.products;
+    } else if (window.BakeryProducts) {
+      items = window.BakeryProducts.filterProducts(selectedCategory, searchQuery, selectedSort);
     }
 
+    // Update Result Count Text
+    if (countEl) {
+      if (items.length === 1) {
+        countEl.innerText = '1 product found';
+      } else if (items.length > 1) {
+        countEl.innerText = `${items.length} products found`;
+      } else {
+        countEl.innerText = 'No products found';
+      }
+    }
+
+    // Handle Empty State (No Products Found)
     if (items.length === 0) {
+      const cleanSearch = searchQuery.trim();
       grid.innerHTML = `
-        <div class="col-span-full text-center py-16 space-y-3 bg-white/60 rounded-3xl border border-[#A94F20]/10 p-8">
-          <i data-lucide="cookie" class="w-12 h-12 text-[#A94F20] mx-auto opacity-40"></i>
-          <h4 class="text-lg font-bold text-[#5A2D1A]">No delicious items found</h4>
-          <p class="text-sm text-[#75655D]">Try searching for something else like "Rasmalai", "Badam Milk", "Black Forest", or "Brownie".</p>
+        <div class="col-span-full text-center py-16 space-y-4 bg-white/80 rounded-3xl border border-[#A94F20]/20 p-8 shadow-sm">
+          <div class="w-16 h-16 bg-amber-100 text-[#A94F20] rounded-full flex items-center justify-center mx-auto text-2xl font-bold">
+            <i class="fas fa-search"></i>
+          </div>
+          <h4 class="text-2xl font-serif font-bold text-[#5A2D1A]">No products found</h4>
+          <p class="text-xs md:text-sm text-[#75655D] max-w-md mx-auto leading-relaxed">
+            ${cleanSearch ? `No bakery products found matching "<strong>${cleanSearch}</strong>" in <strong>${selectedCategory.toUpperCase()}</strong>.` : 'No products available under this category.'}
+          </p>
+          <div class="pt-2">
+            <button onclick="window.App.clearAllFilters()" class="btn-primary text-xs py-3 px-6 shadow-md hover:scale-105 transition-all">
+              <i class="fas fa-redo me-1"></i> VIEW ALL PRODUCTS
+            </button>
+          </div>
         </div>
       `;
-      if (window.lucide) window.lucide.createIcons();
       return;
     }
 
@@ -173,7 +252,7 @@ window.App = (function () {
             </div>
 
             <h3 onclick="window.App.openQuickView('${p.id}')" class="font-serif text-lg font-bold text-[#241812] group-hover:text-[#A94F20] transition-colors cursor-pointer">${p.name}</h3>
-            <p class="text-xs text-[#75655D] leading-relaxed line-clamp-2">${p.shortDesc || p.desc || ''}</p>
+            <p class="text-xs text-[#75655D] leading-relaxed line-clamp-2">${p.description || p.shortDesc || ''}</p>
           </div>
         </div>
 
@@ -194,13 +273,10 @@ window.App = (function () {
     if (window.lucide) window.lucide.createIcons();
   }
 
-  /**
-   * Add Product Directly to Cart
-   */
   function addToCartDirect(productId) {
     let product = null;
     if (window.SLBProducts) product = window.SLBProducts.getProductById(productId);
-    if (!product && window.BAKERY_DATA) product = window.BAKERY_DATA.products.find(p => p.id === productId);
+    if (!product && window.BakeryProducts) product = window.BakeryProducts.getProductById(productId);
 
     if (!product) return;
 
@@ -211,9 +287,6 @@ window.App = (function () {
     }
   }
 
-  /**
-   * Update Cart UI Badges & Drawer Items
-   */
   function updateCartUI() {
     const summary = SLBCart.getCartSummary();
     const badge = document.getElementById('cart-badge');
@@ -273,9 +346,6 @@ window.App = (function () {
     updateCartUI();
   }
 
-  /**
-   * Cart Drawer Open & Close
-   */
   function openCartDrawer() {
     const drawer = document.getElementById('cart-drawer');
     if (drawer) {
@@ -293,9 +363,6 @@ window.App = (function () {
     }
   }
 
-  /**
-   * Launch 6-Step Multi-Step Checkout Modal
-   */
   function openCheckoutStepper() {
     closeCartDrawer();
     const modal = document.getElementById('checkout-stepper-modal');
@@ -316,13 +383,10 @@ window.App = (function () {
     }
   }
 
-  /**
-   * Quick View Modal for Cakes & Customization
-   */
   function openQuickView(productId) {
     let product = null;
     if (window.SLBProducts) product = window.SLBProducts.getProductById(productId);
-    if (!product && window.BAKERY_DATA) product = window.BAKERY_DATA.products.find(p => p.id === productId);
+    if (!product && window.BakeryProducts) product = window.BakeryProducts.getProductById(productId);
 
     const modal = document.getElementById('quick-view-modal');
     if (!product || !modal) return;
@@ -376,7 +440,7 @@ window.App = (function () {
             </div>
 
             <h3 class="font-serif text-2xl font-bold text-[#5A2D1A] mb-2">${product.name}</h3>
-            <p class="text-[#75655D] leading-relaxed mb-4">${product.desc || product.shortDesc || ''}</p>
+            <p class="text-[#75655D] leading-relaxed mb-4">${product.description || product.fullDesc || ''}</p>
 
             ${product.isCake ? `
               <div class="space-y-3 p-4 bg-[#FFF9F2] rounded-2xl border border-[#A94F20]/15 mb-4">
@@ -421,7 +485,7 @@ window.App = (function () {
     currentCustomization[field] = val;
     let product = null;
     if (window.SLBProducts) product = window.SLBProducts.getProductById(productId);
-    if (!product && window.BAKERY_DATA) product = window.BAKERY_DATA.products.find(p => p.id === productId);
+    if (!product && window.BakeryProducts) product = window.BakeryProducts.getProductById(productId);
 
     if (product) renderQuickViewContent(product);
   }
@@ -437,7 +501,7 @@ window.App = (function () {
   function addCustomizedToCart(productId, finalPrice) {
     let product = null;
     if (window.SLBProducts) product = window.SLBProducts.getProductById(productId);
-    if (!product && window.BAKERY_DATA) product = window.BAKERY_DATA.products.find(p => p.id === productId);
+    if (!product && window.BakeryProducts) product = window.BakeryProducts.getProductById(productId);
 
     if (!product) return;
 
@@ -454,9 +518,6 @@ window.App = (function () {
     }
   }
 
-  /**
-   * Render Seating Areas / Dining Lounge
-   */
   function renderSeatingAreas() {
     const container = document.getElementById('seating-areas-grid');
     if (!container) return;
@@ -605,9 +666,6 @@ window.App = (function () {
     `;
   }
 
-  /**
-   * Admin Dashboard Modal Controller
-   */
   function openAdminDashboard() {
     const modal = document.getElementById('admin-modal');
     if (!modal) return;
@@ -687,6 +745,8 @@ window.App = (function () {
     init,
     setCategory,
     handleSearch,
+    clearSearch,
+    clearAllFilters,
     handleSort,
     addToCartDirect,
     updateCartQty,

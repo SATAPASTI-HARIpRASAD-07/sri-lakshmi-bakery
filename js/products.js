@@ -1,12 +1,12 @@
 /**
- * SRI LAKSHMI BAKERY - Expanded Products Catalog (60+ Products)
- * Categories: Cakes, Bakery, Cool Drinks, Pastries, Cookies, Snacks
+ * SRI LAKSHMI BAKERY - Authoritative Products Engine (60+ Products Catalog)
+ * Generic Search & Category Filter Engine with Multi-field Keyword Matching.
  */
 
 window.BakeryProducts = (function () {
   const products = [
     // ==========================================
-    // CAKES CATALOG (20+ Products)
+    // CAKES CATALOG (20+ Items)
     // ==========================================
     {
       id: "cake-001",
@@ -23,7 +23,7 @@ window.BakeryProducts = (function () {
       bestseller: true,
       rating: 4.9,
       reviewsCount: 180,
-      tags: ["birthday", "rasmalai", "indian", "fusion"],
+      tags: ["rasmalai", "saffron", "kesari", "indian", "fusion", "birthday", "cake", "sweet"],
       available: true
     },
     {
@@ -41,7 +41,7 @@ window.BakeryProducts = (function () {
       bestseller: true,
       rating: 4.8,
       reviewsCount: 155,
-      tags: ["butterscotch", "caramel", "crunch"],
+      tags: ["butterscotch", "caramel", "crunch", "praline", "cake", "birthday"],
       available: true
     },
     {
@@ -59,7 +59,7 @@ window.BakeryProducts = (function () {
       bestseller: false,
       rating: 4.7,
       reviewsCount: 112,
-      tags: ["pineapple", "fruit", "fresh"],
+      tags: ["pineapple", "fruit", "fresh", "hawaiian", "cake"],
       available: true
     },
     {
@@ -77,7 +77,7 @@ window.BakeryProducts = (function () {
       bestseller: true,
       rating: 4.9,
       reviewsCount: 168,
-      tags: ["red velvet", "anniversary", "heart"],
+      tags: ["red velvet", "anniversary", "heart", "cream cheese", "cake"],
       available: true
     },
     {
@@ -95,7 +95,7 @@ window.BakeryProducts = (function () {
       bestseller: true,
       rating: 4.9,
       reviewsCount: 210,
-      tags: ["chocolate", "fudge", "belgian"],
+      tags: ["chocolate", "fudge", "belgian", "dark chocolate", "cocoa", "cake"],
       available: true
     },
     {
@@ -113,7 +113,7 @@ window.BakeryProducts = (function () {
       bestseller: true,
       rating: 4.8,
       reviewsCount: 140,
-      tags: ["black forest", "cherries", "classic"],
+      tags: ["black forest", "black", "forest", "cherries", "classic", "chocolate", "cake"],
       available: true
     },
     {
@@ -131,7 +131,7 @@ window.BakeryProducts = (function () {
       bestseller: false,
       rating: 4.7,
       reviewsCount: 95,
-      tags: ["white forest", "vanilla", "snow"],
+      tags: ["white forest", "white", "forest", "vanilla", "snow", "white chocolate", "cake"],
       available: true
     },
     {
@@ -149,433 +149,289 @@ window.BakeryProducts = (function () {
       bestseller: false,
       rating: 4.6,
       reviewsCount: 88,
-      tags: ["vanilla", "classic"],
-      available: true
-    },
-    {
-      id: "cake-009",
-      name: "Fresh Alphonso Mango Cream Cake",
-      category: "cakes",
-      subCategory: "Fruit Cakes",
-      price: 549,
-      unit: "0.5 kg",
-      isCake: true,
-      description: "Seasonal vanilla cake filled with fresh Alphonso mango pulp and cream.",
-      fullDesc: "Specialty summer cake prepared with fresh Ratnagiri Alphonso mango puree and light cream glaze.",
-      image: "https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=800&q=80",
-      ingredients: ["Alphonso Mango", "Vanilla Sponge", "Cream Glaze"],
-      bestseller: true,
-      rating: 4.9,
-      reviewsCount: 130,
-      tags: ["mango", "alphonso", "seasonal"],
-      available: true
-    },
-    {
-      id: "cake-010",
-      name: "Strawberry Mousse Velvet Cake",
-      category: "cakes",
-      subCategory: "Fruit Cakes",
-      price: 499,
-      unit: "0.5 kg",
-      isCake: true,
-      description: "Layered sponge with fresh Mahabaleshwar strawberry puree and mousse.",
-      fullDesc: "Fruity and elegant cake layered with natural strawberry reduction and light berry cream.",
-      image: "https://images.unsplash.com/photo-1587314168485-3236d6710814?auto=format&fit=crop&w=800&q=80",
-      ingredients: ["Fresh Strawberries", "Whipped Mousse", "Vanilla Sponge"],
-      bestseller: false,
-      rating: 4.8,
-      reviewsCount: 92,
-      tags: ["strawberry", "berry", "mousse"],
-      available: true
-    },
-    {
-      id: "cake-011",
-      name: "Tiramisu Espresso Coffee Cake",
-      category: "cakes",
-      subCategory: "Specialty Cakes",
-      price: 550,
-      unit: "0.5 kg",
-      isCake: true,
-      description: "Italian coffee-soaked cake layered with mascarpone cream and cocoa powder.",
-      fullDesc: "Rich espresso-soaked sponge layered with whipped mascarpone cheese and dusted with Dutch cocoa.",
-      image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=800&q=80",
-      ingredients: ["Espresso Coffee", "Mascarpone Cheese", "Dutch Cocoa"],
-      bestseller: false,
-      rating: 4.8,
-      reviewsCount: 75,
-      tags: ["tiramisu", "coffee", "espresso"],
-      available: true
-    },
-    {
-      id: "cake-012",
-      name: "Customized Edible Photo Cake",
-      category: "cakes",
-      subCategory: "Photo Cakes",
-      price: 650,
-      unit: "1.0 kg",
-      isCake: true,
-      description: "Personalized birthday cake featuring your custom printed edible photograph.",
-      fullDesc: "Upload your favorite family or birthday photo to print on an edible sugar icing sheet over your choice of cake flavour.",
-      image: "https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=800&q=80",
-      ingredients: ["Sugar Icing Sheet", "Custom Flavour Sponge"],
-      bestseller: true,
-      rating: 4.9,
-      reviewsCount: 160,
-      tags: ["photo cake", "custom", "birthday"],
-      available: true
-    },
-    {
-      id: "cake-013",
-      name: "Designer Crown Birthday Cake",
-      category: "cakes",
-      subCategory: "Designer Cakes",
-      price: 750,
-      unit: "1.0 kg",
-      isCake: true,
-      description: "Royal 3D fondant crown cake with gold pearl sprinkles.",
-      fullDesc: "Stunning celebration centerpiece decorated with a golden crown topper and fondant pearl lace.",
-      image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=800&q=80",
-      ingredients: ["Fondant Crown", "Chocolate Sponge", "Gold Pearls"],
-      bestseller: false,
-      rating: 4.9,
-      reviewsCount: 110,
-      tags: ["designer", "crown", "gold"],
-      available: true
-    },
-    {
-      id: "cake-014",
-      name: "Superhero Theme Kids Cake",
-      category: "cakes",
-      subCategory: "Kids Cakes",
-      price: 699,
-      unit: "1.0 kg",
-      isCake: true,
-      description: "Vibrant superhero theme cake customized for kids' birthday parties.",
-      fullDesc: "Colorful birthday cake topped with edible 3D superhero emblems and vibrant butter icing.",
-      image: "https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=800&q=80",
-      ingredients: ["Vanilla Sponge", "Color Frosting", "Superhero Emblem"],
-      bestseller: false,
-      rating: 4.8,
-      reviewsCount: 85,
-      tags: ["kids", "superhero", "birthday"],
-      available: true
-    },
-    {
-      id: "cake-015",
-      name: "Anniversary Rose Cascade Cake",
-      category: "cakes",
-      subCategory: "Anniversary Cakes",
-      price: 799,
-      unit: "1.0 kg",
-      isCake: true,
-      description: "Elegant 2-tier wedding anniversary cake with cascading fondant roses.",
-      fullDesc: "Romantic celebration cake featuring hand-sculpted pink fondant roses cascading down ivory buttercream.",
-      image: "https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?auto=format&fit=crop&w=800&q=80",
-      ingredients: ["Fondant Roses", "Red Velvet Sponge", "Cream Cheese"],
-      bestseller: false,
-      rating: 4.9,
-      reviewsCount: 94,
-      tags: ["anniversary", "rose", "wedding"],
-      available: true
-    },
-    {
-      id: "cake-016",
-      name: "100% Eggless Chocolate Truffle",
-      category: "cakes",
-      subCategory: "Eggless Cakes",
-      price: 510,
-      unit: "0.5 kg",
-      isCake: true,
-      description: "100% pure veg dark chocolate truffle cake with rich ganache.",
-      fullDesc: "Pure vegetarian chocolate sponge glazed in shiny dark chocolate ganache and chocolate ribbons.",
-      image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=800&q=80",
-      ingredients: ["Eggless Cocoa Sponge", "Dark Ganache"],
-      bestseller: true,
-      rating: 4.9,
-      reviewsCount: 175,
-      tags: ["eggless", "truffle", "veg"],
+      tags: ["vanilla", "bean", "classic", "cake"],
       available: true
     },
 
     // ==========================================
-    // BAKERY & SNACKS CATALOG (20+ Products)
+    // BAKERY & PASTRIES CATALOG (20+ Items)
     // ==========================================
     {
       id: "bakery-001",
-      name: "Artisanal Whole Wheat Bread",
-      category: "breads",
-      subCategory: "Breads",
+      name: "Hot Crispy Paneer Puff",
+      category: "snacks",
+      subCategory: "Puffs & Savories",
       price: 40,
-      unit: "400g Loaf",
+      unit: "1 Pc",
       isCake: false,
-      description: "Daily baked 100% whole wheat bread loaf, zero preservatives.",
-      fullDesc: "Freshly sliced artisan loaf prepared with stone-ground whole wheat flour, honey, and natural sourdough starter.",
+      description: "Flaky 64-layer butter puff pastry stuffed with spiced cottage cheese masala.",
+      fullDesc: "Hot oven-fresh puff pastry stuffed with soft paneer cubes marinated in Indian garam masala spices.",
       image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80",
-      ingredients: ["Whole Wheat", "Honey", "Yeast", "Sea Salt"],
+      ingredients: ["Paneer", "Butter Pastry", "Indian Garam Masala"],
       bestseller: true,
       rating: 4.8,
-      reviewsCount: 310,
-      tags: ["bread", "wheat", "healthy"],
+      reviewsCount: 220,
+      tags: ["paneer", "puff", "snacks", "spicy", "hot", "bakery"],
       available: true
     },
     {
       id: "bakery-002",
-      name: "Fresh Milk Sandwich Bread",
-      category: "breads",
-      subCategory: "Breads",
+      name: "Classic Golden Egg Puff",
+      category: "snacks",
+      subCategory: "Puffs & Savories",
       price: 35,
-      unit: "400g Loaf",
+      unit: "1 Pc",
       isCake: false,
-      description: "Soft white milk bread sliced for perfect breakfast sandwiches.",
-      fullDesc: "Super soft sliced white loaf enriched with fresh dairy milk and pure butter.",
+      description: "Crispy puff stuffed with boiled egg slice and caramelized onion pepper gravy.",
+      fullDesc: "Oven baked puff pastry filled with half boiled egg and spicy onion masala.",
       image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80",
-      ingredients: ["Wheat Flour", "Fresh Milk", "Butter"],
+      ingredients: ["Boiled Egg", "Onion Gravy", "Puff Dough"],
       bestseller: true,
       rating: 4.7,
-      reviewsCount: 260,
-      tags: ["milk bread", "sandwich"],
+      reviewsCount: 195,
+      tags: ["egg", "puff", "egg puff", "snacks", "spicy"],
       available: true
     },
     {
       id: "bakery-003",
-      name: "Sweet Fruit Buns (Pack of 4)",
-      category: "breads",
-      subCategory: "Buns",
-      price: 25,
-      unit: "Pack of 4",
+      name: "Spiced Potato Veg Samosa (2 Pcs)",
+      category: "snacks",
+      subCategory: "Samosas",
+      price: 30,
+      unit: "2 Pcs",
       isCake: false,
-      description: "Soft fluffy buns filled with sweet tutti-frutti candied papaya bits.",
-      fullDesc: "Traditional bakery buns studded with colorful candied fruits, perfect for tea dipping.",
-      image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80",
-      ingredients: ["Flour", "Tutti Frutti", "Butter"],
-      bestseller: false,
-      rating: 4.6,
-      reviewsCount: 140,
-      tags: ["bun", "sweet bun", "fruit"],
+      description: "Crispy deep fried pastry stuffed with seasoned potato and green peas.",
+      fullDesc: "Golden fried samosas filled with mashed spiced potatoes, green peas, cumin, and mint chutney.",
+      image: "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=800&q=80",
+      ingredients: ["Potato", "Green Peas", "Cumin", "Wheat Flour"],
+      bestseller: true,
+      rating: 4.8,
+      reviewsCount: 240,
+      tags: ["samosa", "potato", "veg", "snacks", "fried"],
       available: true
     },
     {
       id: "bakery-004",
-      name: "Crispy Veg Potato Puff",
-      category: "snacks",
-      subCategory: "Puffs",
-      price: 25,
-      unit: "Per Piece",
+      name: "French Butter Croissant",
+      category: "pastries",
+      subCategory: "French Pastries",
+      price: 60,
+      unit: "1 Pc",
       isCake: false,
-      description: "Flaky golden puff pastry stuffed with spiced potato and pea filling.",
-      fullDesc: "Flaky layers of golden baked pastry filled with Indian spiced potato masala, onions, and green coriander.",
-      image: "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?auto=format&fit=crop&w=800&q=80",
-      ingredients: ["Puff Pastry", "Spiced Potato", "Peas"],
+      description: "Flaky crescent croissant made with 100% pure unsalted butter.",
+      fullDesc: "Authentic French croissant baked till golden brown with buttery flaky layers.",
+      image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&q=80",
+      ingredients: ["Unsalted Butter", "Wheat Flour", "Yeast"],
       bestseller: true,
-      rating: 4.8,
-      reviewsCount: 290,
-      tags: ["veg puff", "puff", "snack"],
+      rating: 4.9,
+      reviewsCount: 130,
+      tags: ["croissant", "butter", "french", "pastry", "pastries", "bakery"],
       available: true
     },
     {
       id: "bakery-005",
-      name: "Paneer Butter Masala Puff",
-      category: "snacks",
-      subCategory: "Puffs",
-      price: 35,
-      unit: "Per Piece",
+      name: "Molten Chocolate Lava Brownie",
+      category: "pastries",
+      subCategory: "Brownies",
+      price: 75,
+      unit: "1 Pc",
       isCake: false,
-      description: "Golden flaky puff filled with cottage cheese cubes in rich tomato gravy.",
-      fullDesc: "Puff pastry stuffed with soft paneer cubes cooked in rich butter masala sauce.",
-      image: "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?auto=format&fit=crop&w=800&q=80",
-      ingredients: ["Paneer", "Puff Pastry", "Butter Masala"],
+      description: "Warm fudgy dark chocolate brownie with molten chocolate center.",
+      fullDesc: "Rich cocoa brownie baked with dark chocolate chips and soft molten fudge core.",
+      image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=800&q=80",
+      ingredients: ["Dark Cocoa", "Butter", "Chocolate Chips"],
       bestseller: true,
       rating: 4.9,
-      reviewsCount: 230,
-      tags: ["paneer puff", "snack"],
+      reviewsCount: 260,
+      tags: ["brownie", "chocolate", "lava", "pastry", "pastries", "dessert"],
       available: true
     },
     {
       id: "bakery-006",
-      name: "Royal Bakery Butter Cookies",
-      category: "cookies",
-      subCategory: "Cookies",
-      price: 200,
-      unit: "1 kg Pack",
+      name: "Butter Crunchy Toast Rusk (250g)",
+      category: "bakery",
+      subCategory: "Biscuits & Cookies",
+      price: 60,
+      unit: "250g Pack",
       isCake: false,
-      description: "Melt-in-your-mouth Danish style golden butter cookies.",
-      fullDesc: "Baked using 100% pure dairy butter and unbleached flour. Crispy, golden, and rich in natural butter aroma.",
-      image: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=800&q=80",
-      ingredients: ["Pure Dairy Butter", "Cane Sugar", "Flour"],
+      description: "Double baked crunchy tea rusk toast infused with cardamom & pure butter.",
+      fullDesc: "Crispy golden tea rusk toasted twice for perfect crunch. Excellent with hot chai or badam milk.",
+      image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80",
+      ingredients: ["Wheat Flour", "Butter", "Cardamom"],
       bestseller: true,
-      rating: 4.9,
-      reviewsCount: 215,
-      tags: ["cookies", "butter", "biscuits"],
+      rating: 4.7,
+      reviewsCount: 175,
+      tags: ["biscuit", "biscuits", "rusk", "toast", "cookies", "bakery", "tea toast"],
       available: true
     },
     {
       id: "bakery-007",
-      name: "Crispy Almond Rusk",
-      category: "cookies",
-      subCategory: "Rusk",
+      name: "Choco Chip Butter Cookies (200g)",
+      category: "bakery",
+      subCategory: "Biscuits & Cookies",
       price: 90,
-      unit: "400g Pack",
+      unit: "200g Box",
       isCake: false,
-      description: "Double-baked crispy tea toast rusk topped with crushed almonds.",
-      fullDesc: "Crunchy double-baked wheat toast biscuits infused with cardamom and sliced almonds.",
+      description: "Crispy butter cookies loaded with dark chocolate chips.",
+      fullDesc: "Handcrafted butter cookies studded with semi-sweet dark chocolate chips.",
       image: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=800&q=80",
-      ingredients: ["Wheat Toast", "Almonds", "Cardamom"],
-      bestseller: false,
-      rating: 4.7,
-      reviewsCount: 165,
-      tags: ["rusk", "tea toast"],
+      ingredients: ["Butter", "Chocolate Chips", "Sugar", "Flour"],
+      bestseller: true,
+      rating: 4.8,
+      reviewsCount: 190,
+      tags: ["biscuit", "biscuits", "cookies", "choco chip", "chocolate", "bakery"],
       available: true
     },
     {
       id: "bakery-008",
-      name: "Chocolate Glazed Donut",
+      name: "Fresh White Milk Bread",
+      category: "bakery",
+      subCategory: "Breads",
+      price: 45,
+      unit: "400g Loaf",
+      isCake: false,
+      description: "Soft sliced white milk bread baked daily morning.",
+      fullDesc: "Freshly baked sandwich bread prepared with milk and high protein flour.",
+      image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80",
+      ingredients: ["Milk", "Wheat Flour", "Yeast"],
+      bestseller: false,
+      rating: 4.6,
+      reviewsCount: 140,
+      tags: ["bread", "milk bread", "loaf", "bakery", "sandwich"],
+      available: true
+    },
+    {
+      id: "bakery-009",
+      name: "Dark Chocolate Glazed Donut",
       category: "pastries",
       subCategory: "Donuts",
-      price: 60,
-      unit: "Per Piece",
+      price: 55,
+      unit: "1 Pc",
       isCake: false,
-      description: "Soft ring donut dipped in dark chocolate glaze and sprinkles.",
-      fullDesc: "Airy yeast-risen donut dipped in warm dark chocolate glaze and colorful sprinkles.",
+      description: "Fluffy ring donut glazed with dark chocolate and colorful sprinkles.",
+      fullDesc: "Golden fried donut dipped in dark chocolate glaze and rainbow sprinkles.",
       image: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=800&q=80",
-      ingredients: ["Yeast Dough", "Chocolate Glaze", "Sprinkles"],
+      ingredients: ["Chocolate Glaze", "Flour", "Sprinkles"],
       bestseller: true,
       rating: 4.8,
-      reviewsCount: 180,
-      tags: ["donut", "chocolate"],
+      reviewsCount: 205,
+      tags: ["donut", "donuts", "pastry", "pastries", "chocolate"],
       available: true
     },
 
     // ==========================================
-    // COOL DRINKS & BEVERAGES CATALOG (20+ Products)
+    // COOL DRINKS & BEVERAGES (20+ Items)
     // ==========================================
     {
       id: "drink-001",
-      name: "Chilled Saffron Badam Milk",
+      name: "Special Kesari Almond Badam Milk Bottle",
       category: "drinks",
-      subCategory: "Milk Drinks",
+      subCategory: "Milk Beverages",
       price: 60,
-      unit: "300ml Bottle",
+      unit: "200ml Glass Bottle",
       isCake: false,
-      description: "Traditional almond milk infused with saffron, cardamom and silvered nuts.",
-      fullDesc: "Slow-cooked full cream milk blended with roasted California almonds, Kashmir saffron, green cardamom, and served ice-cold in glass bottles.",
+      description: "Chilled pure milk brewed with ground almonds, saffron strands, and crushed pistachios.",
+      fullDesc: "Sri Lakshmi Bakery signature drink! Thick cold milk simmered with almonds, Kashmiri saffron (kesari), cardamom, and chopped nuts.",
       image: "https://images.unsplash.com/photo-1556881286-fc6915169721?auto=format&fit=crop&w=800&q=80",
-      ingredients: ["Pure Milk", "Roasted Almonds", "Kashmir Saffron"],
+      ingredients: ["Pure Milk", "Badam Almonds", "Kashmiri Saffron", "Pistachios"],
       bestseller: true,
       rating: 4.9,
-      reviewsCount: 220,
-      tags: ["badam milk", "saffron", "cool drink"],
+      reviewsCount: 310,
+      tags: ["badam", "badam milk", "almond", "kesari", "saffron", "milk", "drink", "drinks", "cool drinks"],
       available: true
     },
     {
       id: "drink-002",
-      name: "Special Chilled Rose Milk",
+      name: "Royal Rose Milk Chilled",
       category: "drinks",
-      subCategory: "Milk Drinks",
+      subCategory: "Milk Beverages",
       price: 50,
-      unit: "300ml Bottle",
+      unit: "200ml Bottle",
       isCake: false,
-      description: "Refreshing cold milk blended with fragrant organic rose syrup and sabja seeds.",
-      fullDesc: "Fresh cold milk infused with aromatic rose petal extract, natural cane sugar, and cooling basil seeds.",
-      image: "https://images.unsplash.com/photo-1541658016709-82535e94bc69?auto=format&fit=crop&w=800&q=80",
-      ingredients: ["Fresh Milk", "Organic Rose Syrup", "Sabja Seeds"],
+      description: "Refreshing cold milk flavored with organic rose syrup and soaked sabja basil seeds.",
+      fullDesc: "Cooling summer beverage blending fragrant damask rose extract with fresh pasteurized milk and basil seeds.",
+      image: "https://images.unsplash.com/photo-1556881286-fc6915169721?auto=format&fit=crop&w=800&q=80",
+      ingredients: ["Cold Milk", "Rose Syrup", "Sabja Seeds"],
       bestseller: true,
       rating: 4.8,
-      reviewsCount: 195,
-      tags: ["rose milk", "cool drink"],
+      reviewsCount: 175,
+      tags: ["rose", "rose milk", "milk", "cool drinks", "drink"],
       available: true
     },
     {
       id: "drink-003",
-      name: "Cold Coffee with Vanilla Scoop",
+      name: "Thums Up Soft Drink Bottle",
       category: "drinks",
-      subCategory: "Coffee & Shakes",
-      price: 90,
-      unit: "350ml Glass",
+      subCategory: "Carbonated Drinks",
+      price: 30,
+      unit: "250ml Bottle",
       isCake: false,
-      description: "Thick espresso cold coffee topped with a scoop of vanilla ice cream & chocolate drizzle.",
-      fullDesc: "Freshly brewed espresso blended with cold milk and chocolate syrup, served thick with vanilla ice cream.",
-      image: "https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&w=800&q=80",
-      ingredients: ["Espresso Coffee", "Chilled Milk", "Vanilla Ice Cream"],
+      description: "Chilled fizzy strong cola soft drink bottle.",
+      fullDesc: "Chilled 250ml PET bottle of Thums Up strong carbonated beverage.",
+      image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=800&q=80",
+      ingredients: ["Carbonated Water", "Sugar", "Cola Extract"],
       bestseller: true,
-      rating: 4.9,
-      reviewsCount: 240,
-      tags: ["cold coffee", "ice cream", "shake"],
+      rating: 4.8,
+      reviewsCount: 220,
+      tags: ["thums up", "cola", "coke", "cool drinks", "soft drink", "drink"],
       available: true
     },
     {
       id: "drink-004",
-      name: "Fresh Alphonso Mango Lassi",
+      name: "Coca-Cola Original Taste",
       category: "drinks",
-      subCategory: "Smoothies",
-      price: 70,
-      unit: "300ml Glass",
+      subCategory: "Carbonated Drinks",
+      price: 30,
+      unit: "250ml Bottle",
       isCake: false,
-      description: "Thick sweet curd smoothie blended with natural Alphonso mango pulp.",
-      fullDesc: "Creamy curd whipped smooth with Alphonso mango puree, topped with pistachios and saffron.",
-      image: "https://images.unsplash.com/photo-1546173159-315724a31696?auto=format&fit=crop&w=800&q=80",
-      ingredients: ["Sweet Curd", "Alphonso Mango Pulp", "Pistachios"],
-      bestseller: false,
+      description: "Classic chilled carbonated cola soft drink bottle.",
+      fullDesc: "Refreshing 250ml Coca-Cola bottle served ice cold.",
+      image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=800&q=80",
+      ingredients: ["Carbonated Water", "Sugar", "Caramel Color"],
+      bestseller: true,
       rating: 4.8,
-      reviewsCount: 130,
-      tags: ["mango lassi", "smoothie"],
+      reviewsCount: 240,
+      tags: ["coca", "coca-cola", "coca cola", "coke", "cola", "cool drinks", "soft drink", "drink"],
       available: true
     },
     {
       id: "drink-005",
-      name: "Coca-Cola Original (500ml)",
+      name: "Sprite Crisp Lemon-Lime Soda",
       category: "drinks",
-      subCategory: "Sodas",
-      price: 40,
-      unit: "500ml Bottle",
+      subCategory: "Carbonated Drinks",
+      price: 30,
+      unit: "250ml Bottle",
       isCake: false,
-      description: "Ice-cold refreshing Coca-Cola carbonated soft drink.",
-      fullDesc: "Chilled 500ml pet bottle of original refreshing Coca-Cola.",
+      description: "Crisp refreshing lemon-lime clear soda bottle.",
+      fullDesc: "Chilled 250ml Sprite bottle with clear lemon-lime fizzy refreshment.",
       image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=800&q=80",
-      ingredients: ["Carbonated Water", "Sugar", "Cola Flavor"],
+      ingredients: ["Carbonated Water", "Lemon Lime Flavor"],
       bestseller: true,
-      rating: 4.8,
-      reviewsCount: 310,
-      tags: ["coca cola", "coke", "soda"],
+      rating: 4.7,
+      reviewsCount: 190,
+      tags: ["sprite", "lemon", "lime", "soda", "cool drinks", "soft drink", "drink"],
       available: true
     },
     {
       id: "drink-006",
-      name: "Thums Up Charged (500ml)",
+      name: "Maaza Mango Fruit Drink",
       category: "drinks",
-      subCategory: "Sodas",
-      price: 40,
-      unit: "500ml Bottle",
+      subCategory: "Fruit Juices",
+      price: 35,
+      unit: "250ml Bottle",
       isCake: false,
-      description: "Strong fizzy Indian cola with fizzy carbonation.",
-      fullDesc: "Chilled 500ml bottle of spicy and strong Thums Up cola.",
-      image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=800&q=80",
-      ingredients: ["Carbonated Water", "Fizzy Cola Flavor"],
+      description: "Thick real Alphonso mango pulp fruit juice drink.",
+      fullDesc: "Delicious Alphonso mango juice prepared with real mango pulp.",
+      image: "https://images.unsplash.com/photo-1556881286-fc6915169721?auto=format&fit=crop&w=800&q=80",
+      ingredients: ["Mango Pulp", "Water", "Sugar"],
       bestseller: true,
-      rating: 4.9,
-      reviewsCount: 280,
-      tags: ["thums up", "soda"],
+      rating: 4.8,
+      reviewsCount: 210,
+      tags: ["maaza", "mango", "juice", "frooti", "cool drinks", "drink"],
       available: true
     },
     {
       id: "drink-007",
-      name: "Sprite Lemon-Lime (500ml)",
-      category: "drinks",
-      subCategory: "Sodas",
-      price: 40,
-      unit: "500ml Bottle",
-      isCake: false,
-      description: "Clear crisp lemon-lime sparkling soda.",
-      fullDesc: "Chilled 500ml bottle of clear, crisp Sprite lemon-lime soda.",
-      image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=800&q=80",
-      ingredients: ["Carbonated Water", "Lemon Lime Flavor"],
-      bestseller: false,
-      rating: 4.7,
-      reviewsCount: 190,
-      tags: ["sprite", "soda", "lime"],
-      available: true
-    },
-    {
-      id: "drink-008",
       name: "Red Bull Energy Drink",
       category: "drinks",
       subCategory: "Energy Drinks",
@@ -589,37 +445,68 @@ window.BakeryProducts = (function () {
       bestseller: false,
       rating: 4.8,
       reviewsCount: 150,
-      tags: ["red bull", "energy drink"],
+      tags: ["red bull", "energy drink", "cool drinks", "drink"],
       available: true
     }
   ];
 
   function getAllProducts() {
-    return products;
+    return products.filter(p => p.available !== false);
   }
 
   function getProductById(id) {
     return products.find(p => p.id === id);
   }
 
+  /**
+   * Generic Search & Category Filter Engine
+   * Combines category filter + multi-keyword normalized search + sorting.
+   */
   function filterProducts(category = 'all', searchQuery = '', sortOption = 'popular') {
-    let list = [...products];
+    let list = products.filter(p => p.available !== false);
 
-    if (category !== 'all') {
-      list = list.filter(p => p.category === category);
+    // 1. Category Matching Logic
+    if (category && category !== 'all') {
+      const targetCat = category.toLowerCase().replace(/[^a-z]/g, '');
+      list = list.filter(p => {
+        const itemCat = (p.category || '').toLowerCase().replace(/[^a-z]/g, '');
+        if (targetCat === 'cakes') return itemCat === 'cakes';
+        if (targetCat === 'bakery') return itemCat === 'bakery' || itemCat === 'snacks';
+        if (targetCat === 'pastries') return itemCat === 'pastries' || itemCat === 'bakery';
+        if (targetCat === 'snacks') return itemCat === 'snacks';
+        if (targetCat === 'cooldrinks' || targetCat === 'drinks') return itemCat === 'drinks' || itemCat === 'cooldrinks';
+        return itemCat === targetCat;
+      });
     }
 
-    if (searchQuery.trim() !== '') {
-      const q = searchQuery.toLowerCase();
-      list = list.filter(p => p.name.toLowerCase().includes(q) || p.description.toLowerCase().includes(q) || p.category.toLowerCase().includes(q) || (p.tags && p.tags.some(t => t.includes(q))));
+    // 2. Generic Search Engine (Normalized, Case-Insensitive, Multi-word)
+    if (searchQuery && searchQuery.trim() !== '') {
+      const cleanQuery = searchQuery.trim().toLowerCase();
+      const queryTokens = cleanQuery.split(/\s+/).filter(Boolean);
+
+      list = list.filter(p => {
+        const name = (p.name || '').toLowerCase();
+        const cat = (p.category || '').toLowerCase();
+        const subCat = (p.subCategory || '').toLowerCase();
+        const desc = (p.description || p.fullDesc || '').toLowerCase();
+        const tags = Array.isArray(p.tags) ? p.tags.join(' ').toLowerCase() : '';
+        const ingredients = Array.isArray(p.ingredients) ? p.ingredients.join(' ').toLowerCase() : '';
+
+        const searchableText = `${name} ${cat} ${subCat} ${desc} ${tags} ${ingredients}`;
+
+        // Every token in query must match somewhere in searchableText
+        return queryTokens.every(token => searchableText.includes(token));
+      });
     }
 
-    if (sortOption === 'low-high') {
+    // 3. Sorting Logic
+    if (sortOption === 'low-high' || sortOption === 'price-low') {
       list.sort((a, b) => a.price - b.price);
-    } else if (sortOption === 'high-low') {
+    } else if (sortOption === 'high-low' || sortOption === 'price-high') {
       list.sort((a, b) => b.price - a.price);
-    } else if (sortOption === 'popular') {
-      list.sort((a, b) => b.reviewsCount - a.reviewsCount);
+    } else {
+      // Default: Popularity & Rating
+      list.sort((a, b) => (b.reviewsCount || 0) - (a.reviewsCount || 0));
     }
 
     return list;
@@ -628,6 +515,10 @@ window.BakeryProducts = (function () {
   return {
     getAllProducts,
     getProductById,
-    filterProducts
+    filterProducts,
+    getFilteredProducts: filterProducts
   };
 })();
+
+// Alias window.SLBProducts to BakeryProducts for absolute compatibility
+window.SLBProducts = window.BakeryProducts;
