@@ -1,6 +1,6 @@
 /**
  * SRI LAKSHMI BAKERY - Authoritative Products Engine (60+ Products Catalog)
- * Generic Search & Category Filter Engine with Multi-field Keyword Matching.
+ * Generic Search & Category Filter Engine with Multi-field Keyword Matching & WebP Image Optimization.
  */
 
 window.BakeryProducts = (function () {
@@ -18,7 +18,7 @@ window.BakeryProducts = (function () {
       isCake: true,
       description: "Cardamom sponge infused with saffron milk, topped with soft rasmalai & pistachios.",
       fullDesc: "An authentic Indian celebration favorite! Fluffy sponge soaked in aromatic saffron-cardamom milk, layered with soft rasmalai pieces, crushed pistachios, and edible rose petals.",
-      image: "https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&format=webp&w=480&q=80",
       ingredients: ["Fresh Rasmalai", "Saffron Milk", "Cardamom Sponge", "Pistachio Curls"],
       bestseller: true,
       rating: 4.9,
@@ -36,7 +36,7 @@ window.BakeryProducts = (function () {
       isCake: true,
       description: "Rich caramel sponge layered with crunchy butterscotch praline and whipped cream.",
       fullDesc: "Golden vanilla sponge smothered in creamy caramel butterscotch sauce, filled with crunchy praline bits and topped with chocolate crown decorations.",
-      image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&format=webp&w=480&q=80",
       ingredients: ["Caramel Praline", "Butterscotch Sauce", "Vanilla Sponge", "Whipped Cream"],
       bestseller: true,
       rating: 4.8,
@@ -54,7 +54,7 @@ window.BakeryProducts = (function () {
       isCake: true,
       description: "Moist sponge layered with real pineapple slices, maraschino cherries and light cream.",
       fullDesc: "Soft vanilla cake filled with juicy pineapple chunks, sweet pineapple glaze, and topped with glace cherries and white chocolate flakes.",
-      image: "https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&format=webp&w=480&q=80",
       ingredients: ["Fresh Pineapple Slices", "Vanilla Sponge", "Whipped Cream", "Glace Cherries"],
       bestseller: false,
       rating: 4.7,
@@ -72,7 +72,7 @@ window.BakeryProducts = (function () {
       isCake: true,
       description: "Vibrant red cocoa sponge layered with silky cream cheese frosting.",
       fullDesc: "Heart-shaped red velvet sponge layered with authentic tangy cream cheese frosting and fine velvet crumbs.",
-      image: "https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?auto=format&fit=crop&format=webp&w=480&q=80",
       ingredients: ["Red Cocoa Sponge", "Cream Cheese Frosting", "Vanilla Extract"],
       bestseller: true,
       rating: 4.9,
@@ -90,7 +90,7 @@ window.BakeryProducts = (function () {
       isCake: true,
       description: "Rich 3-layer dark chocolate fudge cake with fresh cream ganache.",
       fullDesc: "Handcrafted with imported 70% Belgian dark chocolate, moist cocoa sponge layers, and silky chocolate buttercream.",
-      image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&format=webp&w=480&q=80",
       ingredients: ["Belgian Dark Chocolate", "Organic Flour", "Pure Butter"],
       bestseller: true,
       rating: 4.9,
@@ -108,7 +108,7 @@ window.BakeryProducts = (function () {
       isCake: true,
       description: "Classic German chocolate sponge layered with whipped vanilla cream and cherries.",
       fullDesc: "Traditional cocoa sponge soaked in cherry syrup, filled with double cream and topped with maraschino cherries.",
-      image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&format=webp&w=480&q=80",
       ingredients: ["Cocoa Sponge", "Whipped Cream", "Maraschino Cherries"],
       bestseller: true,
       rating: 4.8,
@@ -126,7 +126,7 @@ window.BakeryProducts = (function () {
       isCake: true,
       description: "Vanilla sponge with white chocolate curls, cherries and mascarpone cream.",
       fullDesc: "Delicate white vanilla cake coated in fluffy whipped cream, covered with fine white chocolate shavings.",
-      image: "https://images.unsplash.com/photo-1519869325930-281384150729?auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1519869325930-281384150729?auto=format&fit=crop&format=webp&w=480&q=80",
       ingredients: ["Vanilla Sponge", "White Chocolate Curls", "Cherries"],
       bestseller: false,
       rating: 4.7,
@@ -144,7 +144,7 @@ window.BakeryProducts = (function () {
       isCake: true,
       description: "Classic golden vanilla sponge infused with organic vanilla bean seeds.",
       fullDesc: "Timeless golden cake made with pure Madagascar vanilla extract and light butter glaze.",
-      image: "https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&format=webp&w=480&q=80",
       ingredients: ["Madagascar Vanilla", "Pure Butter", "Wheat Flour"],
       bestseller: false,
       rating: 4.6,
@@ -166,7 +166,7 @@ window.BakeryProducts = (function () {
       isCake: false,
       description: "Flaky 64-layer butter puff pastry stuffed with spiced cottage cheese masala.",
       fullDesc: "Hot oven-fresh puff pastry stuffed with soft paneer cubes marinated in Indian garam masala spices.",
-      image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&format=webp&w=480&q=80",
       ingredients: ["Paneer", "Butter Pastry", "Indian Garam Masala"],
       bestseller: true,
       rating: 4.8,
@@ -184,7 +184,7 @@ window.BakeryProducts = (function () {
       isCake: false,
       description: "Crispy puff stuffed with boiled egg slice and caramelized onion pepper gravy.",
       fullDesc: "Oven baked puff pastry filled with half boiled egg and spicy onion masala.",
-      image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&format=webp&w=480&q=80",
       ingredients: ["Boiled Egg", "Onion Gravy", "Puff Dough"],
       bestseller: true,
       rating: 4.7,
@@ -202,7 +202,7 @@ window.BakeryProducts = (function () {
       isCake: false,
       description: "Crispy deep fried pastry stuffed with seasoned potato and green peas.",
       fullDesc: "Golden fried samosas filled with mashed spiced potatoes, green peas, cumin, and mint chutney.",
-      image: "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&format=webp&w=480&q=80",
       ingredients: ["Potato", "Green Peas", "Cumin", "Wheat Flour"],
       bestseller: true,
       rating: 4.8,
@@ -220,7 +220,7 @@ window.BakeryProducts = (function () {
       isCake: false,
       description: "Flaky crescent croissant made with 100% pure unsalted butter.",
       fullDesc: "Authentic French croissant baked till golden brown with buttery flaky layers.",
-      image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&format=webp&w=480&q=80",
       ingredients: ["Unsalted Butter", "Wheat Flour", "Yeast"],
       bestseller: true,
       rating: 4.9,
@@ -238,7 +238,7 @@ window.BakeryProducts = (function () {
       isCake: false,
       description: "Warm fudgy dark chocolate brownie with molten chocolate center.",
       fullDesc: "Rich cocoa brownie baked with dark chocolate chips and soft molten fudge core.",
-      image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&format=webp&w=480&q=80",
       ingredients: ["Dark Cocoa", "Butter", "Chocolate Chips"],
       bestseller: true,
       rating: 4.9,
@@ -256,7 +256,7 @@ window.BakeryProducts = (function () {
       isCake: false,
       description: "Double baked crunchy tea rusk toast infused with cardamom & pure butter.",
       fullDesc: "Crispy golden tea rusk toasted twice for perfect crunch. Excellent with hot chai or badam milk.",
-      image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&format=webp&w=480&q=80",
       ingredients: ["Wheat Flour", "Butter", "Cardamom"],
       bestseller: true,
       rating: 4.7,
@@ -274,7 +274,7 @@ window.BakeryProducts = (function () {
       isCake: false,
       description: "Crispy butter cookies loaded with dark chocolate chips.",
       fullDesc: "Handcrafted butter cookies studded with semi-sweet dark chocolate chips.",
-      image: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&format=webp&w=480&q=80",
       ingredients: ["Butter", "Chocolate Chips", "Sugar", "Flour"],
       bestseller: true,
       rating: 4.8,
@@ -292,7 +292,7 @@ window.BakeryProducts = (function () {
       isCake: false,
       description: "Soft sliced white milk bread baked daily morning.",
       fullDesc: "Freshly baked sandwich bread prepared with milk and high protein flour.",
-      image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&format=webp&w=480&q=80",
       ingredients: ["Milk", "Wheat Flour", "Yeast"],
       bestseller: false,
       rating: 4.6,
@@ -310,7 +310,7 @@ window.BakeryProducts = (function () {
       isCake: false,
       description: "Fluffy ring donut glazed with dark chocolate and colorful sprinkles.",
       fullDesc: "Golden fried donut dipped in dark chocolate glaze and rainbow sprinkles.",
-      image: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&format=webp&w=480&q=80",
       ingredients: ["Chocolate Glaze", "Flour", "Sprinkles"],
       bestseller: true,
       rating: 4.8,
@@ -332,7 +332,7 @@ window.BakeryProducts = (function () {
       isCake: false,
       description: "Chilled pure milk brewed with ground almonds, saffron strands, and crushed pistachios.",
       fullDesc: "Sri Lakshmi Bakery signature drink! Thick cold milk simmered with almonds, Kashmiri saffron (kesari), cardamom, and chopped nuts.",
-      image: "https://images.unsplash.com/photo-1556881286-fc6915169721?auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1556881286-fc6915169721?auto=format&fit=crop&format=webp&w=480&q=80",
       ingredients: ["Pure Milk", "Badam Almonds", "Kashmiri Saffron", "Pistachios"],
       bestseller: true,
       rating: 4.9,
@@ -350,7 +350,7 @@ window.BakeryProducts = (function () {
       isCake: false,
       description: "Refreshing cold milk flavored with organic rose syrup and soaked sabja basil seeds.",
       fullDesc: "Cooling summer beverage blending fragrant damask rose extract with fresh pasteurized milk and basil seeds.",
-      image: "https://images.unsplash.com/photo-1556881286-fc6915169721?auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1556881286-fc6915169721?auto=format&fit=crop&format=webp&w=480&q=80",
       ingredients: ["Cold Milk", "Rose Syrup", "Sabja Seeds"],
       bestseller: true,
       rating: 4.8,
@@ -368,7 +368,7 @@ window.BakeryProducts = (function () {
       isCake: false,
       description: "Chilled fizzy strong cola soft drink bottle.",
       fullDesc: "Chilled 250ml PET bottle of Thums Up strong carbonated beverage.",
-      image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&format=webp&w=480&q=80",
       ingredients: ["Carbonated Water", "Sugar", "Cola Extract"],
       bestseller: true,
       rating: 4.8,
@@ -386,7 +386,7 @@ window.BakeryProducts = (function () {
       isCake: false,
       description: "Classic chilled carbonated cola soft drink bottle.",
       fullDesc: "Refreshing 250ml Coca-Cola bottle served ice cold.",
-      image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&format=webp&w=480&q=80",
       ingredients: ["Carbonated Water", "Sugar", "Caramel Color"],
       bestseller: true,
       rating: 4.8,
@@ -404,7 +404,7 @@ window.BakeryProducts = (function () {
       isCake: false,
       description: "Crisp refreshing lemon-lime clear soda bottle.",
       fullDesc: "Chilled 250ml Sprite bottle with clear lemon-lime fizzy refreshment.",
-      image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&format=webp&w=480&q=80",
       ingredients: ["Carbonated Water", "Lemon Lime Flavor"],
       bestseller: true,
       rating: 4.7,
@@ -422,7 +422,7 @@ window.BakeryProducts = (function () {
       isCake: false,
       description: "Thick real Alphonso mango pulp fruit juice drink.",
       fullDesc: "Delicious Alphonso mango juice prepared with real mango pulp.",
-      image: "https://images.unsplash.com/photo-1556881286-fc6915169721?auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1556881286-fc6915169721?auto=format&fit=crop&format=webp&w=480&q=80",
       ingredients: ["Mango Pulp", "Water", "Sugar"],
       bestseller: true,
       rating: 4.8,
@@ -440,7 +440,7 @@ window.BakeryProducts = (function () {
       isCake: false,
       description: "Chilled Red Bull energy drink can with taurine & B-vitamins.",
       fullDesc: "Chilled 250ml can of Red Bull vitalizing energy drink.",
-      image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&format=webp&w=480&q=80",
       ingredients: ["Caffeine", "Taurine", "B-Vitamins"],
       bestseller: false,
       rating: 4.8,
@@ -460,7 +460,6 @@ window.BakeryProducts = (function () {
 
   /**
    * Generic Search & Category Filter Engine
-   * Combines category filter + multi-keyword normalized search + sorting.
    */
   function filterProducts(category = 'all', searchQuery = '', sortOption = 'popular') {
     let list = products.filter(p => p.available !== false);
@@ -494,7 +493,6 @@ window.BakeryProducts = (function () {
 
         const searchableText = `${name} ${cat} ${subCat} ${desc} ${tags} ${ingredients}`;
 
-        // Every token in query must match somewhere in searchableText
         return queryTokens.every(token => searchableText.includes(token));
       });
     }
@@ -505,7 +503,6 @@ window.BakeryProducts = (function () {
     } else if (sortOption === 'high-low' || sortOption === 'price-high') {
       list.sort((a, b) => b.price - a.price);
     } else {
-      // Default: Popularity & Rating
       list.sort((a, b) => (b.reviewsCount || 0) - (a.reviewsCount || 0));
     }
 

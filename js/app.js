@@ -1,7 +1,7 @@
 /**
  * SRI LAKSHMI BAKERY - Master Application Logic
- * Product Search, Category Filter, Sorting Engine, 6-Step Checkout Stepper,
- * Real-Time Order Tracking, Payment Welcome Card, Cake Customizer, Admin Dashboard.
+ * Product Search, Category Filter, WebP Image Optimization, CLS Layout Reservation,
+ * 6-Step Checkout Stepper, Real-Time Order Tracking, Payment Welcome Card, Admin Dashboard.
  */
 
 window.App = (function () {
@@ -24,7 +24,7 @@ window.App = (function () {
     initPreloader();
     initStickyNav();
 
-    // Check URL Query Parameters for deep linking (e.g. ?category=cakes&search=chocolate)
+    // Check URL Query Parameters for deep linking
     parseUrlQueryParams();
 
     // Initialize Checkout Stepper
@@ -136,7 +136,6 @@ window.App = (function () {
   function handleSearch(query) {
     searchQuery = query || '';
     
-    // Toggle Clear Search [X] Button Visibility
     const clearBtn = document.getElementById('clear-search-btn');
     if (clearBtn) {
       if (searchQuery.trim().length > 0) {
@@ -180,7 +179,7 @@ window.App = (function () {
   }
 
   /**
-   * Render Products Grid with Search & Category Combination Filter
+   * Render Products Grid with Optimized WebP & Lazy Loading
    */
   function renderProducts() {
     const grid = document.getElementById('products-grid');
@@ -194,7 +193,6 @@ window.App = (function () {
       items = window.BakeryProducts.filterProducts(selectedCategory, searchQuery, selectedSort);
     }
 
-    // Update Result Count Text
     if (countEl) {
       if (items.length === 1) {
         countEl.innerText = '1 product found';
@@ -205,7 +203,6 @@ window.App = (function () {
       }
     }
 
-    // Handle Empty State (No Products Found)
     if (items.length === 0) {
       const cleanSearch = searchQuery.trim();
       grid.innerHTML = `
@@ -227,48 +224,61 @@ window.App = (function () {
       return;
     }
 
-    grid.innerHTML = items.map(p => `
-      <div class="bakery-card group overflow-hidden flex flex-col justify-between">
-        <div>
-          <div class="relative aspect-square overflow-hidden bg-[#FFF9F2]">
-            <img src="${p.image}" alt="${p.name}" loading="lazy" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-            ${p.bestseller ? `
-              <span class="absolute top-4 left-4 bg-[#A94F20] text-white text-[10px] uppercase font-bold tracking-widest px-3 py-1 rounded-full shadow-md">
-                Bestseller
-              </span>
-            ` : ''}
-            <button onclick="window.App.openQuickView('${p.id}')" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/90 text-[#5A2D1A] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md hover:bg-[#5A2D1A] hover:text-white">
-              <i data-lucide="eye" class="w-4 h-4"></i>
-            </button>
-          </div>
+    grid.innerHTML = items.map(p => {
+      const optImage = window.SLBImageLoader ? window.SLBImageLoader.getOptimizedImageUrl(p.image, 400, 80) : p.image;
+      const srcSet = window.SLBImageLoader ? window.SLBImageLoader.getResponsiveSrcSet(p.image) : '';
+      const safeTitle = (p.name || 'Product').replace(/'/g, "\\'");
 
-          <div class="p-5 space-y-2">
-            <div class="flex justify-between items-start">
-              <span class="text-[11px] uppercase tracking-wider text-[#A94F20] font-bold">${p.category}</span>
-              <div class="flex items-center gap-1 text-xs font-bold text-[#D9823B]">
-                <i data-lucide="star" class="w-3.5 h-3.5 fill-[#D9823B]"></i>
-                <span>${p.rating || '4.8'}</span>
-              </div>
+      return `
+        <div class="bakery-card group overflow-hidden flex flex-col justify-between">
+          <div>
+            <!-- Reserved aspect-ratio container for CLS prevention -->
+            <div class="relative aspect-square overflow-hidden bg-[#FFF9F2]">
+              <img src="${optImage}" 
+                   ${srcSet ? `srcset="${srcSet}" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"` : ''}
+                   alt="${p.name}" 
+                   loading="lazy" 
+                   decoding="async" 
+                   onerror="if(window.SLBImageLoader) window.SLBImageLoader.handleImageError(this, '${safeTitle}')"
+                   class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 aspect-square" />
+              ${p.bestseller ? `
+                <span class="absolute top-4 left-4 bg-[#A94F20] text-white text-[10px] uppercase font-bold tracking-widest px-3 py-1 rounded-full shadow-md">
+                  Bestseller
+                </span>
+              ` : ''}
+              <button onclick="window.App.openQuickView('${p.id}')" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/90 text-[#5A2D1A] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md hover:bg-[#5A2D1A] hover:text-white">
+                <i data-lucide="eye" class="w-4 h-4"></i>
+              </button>
             </div>
 
-            <h3 onclick="window.App.openQuickView('${p.id}')" class="font-serif text-lg font-bold text-[#241812] group-hover:text-[#A94F20] transition-colors cursor-pointer">${p.name}</h3>
-            <p class="text-xs text-[#75655D] leading-relaxed line-clamp-2">${p.description || p.shortDesc || ''}</p>
+            <div class="p-5 space-y-2">
+              <div class="flex justify-between items-start">
+                <span class="text-[11px] uppercase tracking-wider text-[#A94F20] font-bold">${p.category}</span>
+                <div class="flex items-center gap-1 text-xs font-bold text-[#D9823B]">
+                  <i data-lucide="star" class="w-3.5 h-3.5 fill-[#D9823B]"></i>
+                  <span>${p.rating || '4.8'}</span>
+                </div>
+              </div>
+
+              <h3 onclick="window.App.openQuickView('${p.id}')" class="font-serif text-lg font-bold text-[#241812] group-hover:text-[#A94F20] transition-colors cursor-pointer">${p.name}</h3>
+              <p class="text-xs text-[#75655D] leading-relaxed line-clamp-2">${p.description || p.shortDesc || ''}</p>
+            </div>
+          </div>
+
+          <div class="p-5 pt-0 flex items-center justify-between border-t border-[#A94F20]/10 mt-3">
+            <div>
+              <span class="text-[11px] text-[#75655D] block">${p.unit || '1 Unit'}</span>
+              <span class="font-display text-lg font-extrabold text-[#5A2D1A]">₹${p.price}</span>
+            </div>
+
+            <button onclick="window.App.addToCartDirect('${p.id}')" class="px-4 py-2 bg-[#A94F20] text-white rounded-full text-xs font-bold hover:bg-[#5A2D1A] transition-colors flex items-center gap-1.5 shadow-md">
+              <i data-lucide="shopping-bag" class="w-3.5 h-3.5"></i>
+              <span>Add</span>
+            </button>
           </div>
         </div>
-
-        <div class="p-5 pt-0 flex items-center justify-between border-t border-[#A94F20]/10 mt-3">
-          <div>
-            <span class="text-[11px] text-[#75655D] block">${p.unit || '1 Unit'}</span>
-            <span class="font-display text-lg font-extrabold text-[#5A2D1A]">₹${p.price}</span>
-          </div>
-
-          <button onclick="window.App.addToCartDirect('${p.id}')" class="px-4 py-2 bg-[#A94F20] text-white rounded-full text-xs font-bold hover:bg-[#5A2D1A] transition-colors flex items-center gap-1.5 shadow-md">
-            <i data-lucide="shopping-bag" class="w-3.5 h-3.5"></i>
-            <span>Add</span>
-          </button>
-        </div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
 
     if (window.lucide) window.lucide.createIcons();
   }
@@ -321,7 +331,7 @@ window.App = (function () {
         drawerItems.innerHTML = summary.items.map(item => `
           <div class="flex items-center justify-between p-3 bg-white rounded-2xl border border-[#A94F20]/15 shadow-sm text-xs">
             <div class="flex items-center gap-3">
-              <img src="${item.image}" alt="${item.name}" class="w-12 h-12 object-cover rounded-xl border border-[#A94F20]/20" />
+              <img src="${window.SLBImageLoader ? window.SLBImageLoader.getOptimizedImageUrl(item.image, 150, 75) : item.image}" alt="${item.name}" loading="lazy" decoding="async" class="w-12 h-12 object-cover rounded-xl border border-[#A94F20]/20 aspect-square" />
               <div>
                 <h5 class="font-bold text-[#5A2D1A]">${item.name}</h5>
                 <span class="text-xs text-[#A94F20] font-semibold">₹${item.price}</span>
@@ -420,10 +430,12 @@ window.App = (function () {
     const basePrice = product.price || 400;
     const finalPrice = Math.round(basePrice * selectedWeightObj.multiplier);
 
+    const optModalImg = window.SLBImageLoader ? window.SLBImageLoader.getOptimizedImageUrl(product.image, 800, 85) : product.image;
+
     content.innerHTML = `
       <div class="grid grid-cols-1 md:grid-cols-12 gap-6 max-h-[80vh] overflow-y-auto pr-1">
-        <div class="md:col-span-5 relative aspect-square overflow-hidden rounded-2xl border border-[#A94F20]/20">
-          <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover" />
+        <div class="md:col-span-5 relative aspect-square overflow-hidden rounded-2xl border border-[#A94F20]/20 bg-[#FFF9F2]">
+          <img src="${optModalImg}" alt="${product.name}" loading="lazy" decoding="async" class="w-full h-full object-cover aspect-square" />
           <span class="absolute top-4 left-4 bg-[#5A2D1A] text-white text-xs font-bold px-3 py-1 rounded-full">
             ${product.isCake ? selectedWeightObj.label : (product.unit || '1 Unit')}
           </span>
@@ -528,29 +540,29 @@ window.App = (function () {
         title: 'AC Birthday Celebration Zone',
         desc: 'Private air-conditioned party area with balloon decor hooks, ambient LED lights, sound system & cake cutting table for up to 35 guests.',
         badge: 'Popular for Birthdays',
-        image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80'
+        image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&format=webp&w=600&q=80'
       },
       {
         id: 'family-dining',
         title: 'Family & Couples Dining Tables',
         desc: 'Comfortable plush seating for families to enjoy hot samosas, badam milk, pastries, burgers, and cool drinks together.',
         badge: 'Comfort Dining',
-        image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80'
+        image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&format=webp&w=600&q=80'
       },
       {
         id: 'snack-counter',
         title: 'Express Snack & Beverage Bar',
         desc: 'Quick bite seating for fresh puff pastry, badam milk bottles, iced cold coffees, and snack combos on the go.',
         badge: 'Express Snacks',
-        image: 'https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&w=800&q=80'
+        image: 'https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&format=webp&w=600&q=80'
       }
     ];
 
     container.innerHTML = areas.map(a => `
       <div class="bakery-card group overflow-hidden flex flex-col justify-between">
         <div>
-          <div class="relative aspect-video overflow-hidden">
-            <img src="${a.image}" alt="${a.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+          <div class="relative aspect-video overflow-hidden bg-[#FFF9F2]">
+            <img src="${a.image}" alt="${a.title}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 aspect-video" />
             <span class="absolute top-4 left-4 bg-[#5A2D1A] text-white text-[11px] uppercase font-bold tracking-widest px-3 py-1 rounded-full shadow-lg">
               ${a.badge}
             </span>
@@ -605,19 +617,41 @@ window.App = (function () {
     if (!container) return;
 
     const images = [
-      'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80',
-      'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80',
-      'https://images.unsplash.com/photo-1517433670267-08bbd4be890f?auto=format&fit=crop&w=600&q=80',
-      'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80',
-      'https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=600&q=80',
-      'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=600&q=80'
+      { thumb: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&format=webp&w=400&q=80', full: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&format=webp&w=1200&q=85', title: 'Belgian Chocolate Cake' },
+      { thumb: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&format=webp&w=400&q=80', full: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&format=webp&w=1200&q=85', title: 'Dining Lounge Area' },
+      { thumb: 'https://images.unsplash.com/photo-1517433670267-08bbd4be890f?auto=format&fit=crop&format=webp&w=400&q=80', full: 'https://images.unsplash.com/photo-1517433670267-08bbd4be890f?auto=format&fit=crop&format=webp&w=1200&q=85', title: 'Fresh Baked Breads' },
+      { thumb: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&format=webp&w=400&q=80', full: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&format=webp&w=1200&q=85', title: 'Hot Puff Pastries' },
+      { thumb: 'https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&format=webp&w=400&q=80', full: 'https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&format=webp&w=1200&q=85', title: 'Rasmalai Celebration Cake' },
+      { thumb: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&format=webp&w=400&q=80', full: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&format=webp&w=1200&q=85', title: 'Glazed Chocolate Donuts' }
     ];
 
     container.innerHTML = images.map(img => `
-      <div class="aspect-square rounded-2xl overflow-hidden border border-[#A94F20]/20 shadow-md group">
-        <img src="${img}" alt="Bakery Gallery" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+      <div onclick="window.App.openLightbox('${img.full}', '${img.title}')" class="aspect-square rounded-2xl overflow-hidden border border-[#A94F20]/20 shadow-md group cursor-pointer bg-[#FFF9F2]">
+        <img src="${img.thumb}" alt="${img.title}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 aspect-square" />
       </div>
     `).join('');
+  }
+
+  function openLightbox(url, title) {
+    const modal = document.getElementById('lightbox-modal');
+    const img = document.getElementById('lightbox-img');
+    const caption = document.getElementById('lightbox-caption');
+
+    if (!modal || !img) return;
+
+    img.src = url;
+    if (caption) caption.innerText = title || '';
+
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+
+  function closeLightbox() {
+    const modal = document.getElementById('lightbox-modal');
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
   }
 
   function renderQualityFeatures() {
@@ -756,6 +790,8 @@ window.App = (function () {
     closeCheckoutStepper,
     openQuickView,
     closeQuickView,
+    openLightbox,
+    closeLightbox,
     updateCakeCustomization,
     addCustomizedToCart,
     openAdminDashboard,
